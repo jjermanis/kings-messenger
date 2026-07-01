@@ -1,0 +1,34 @@
+Version 01.01	35 minutes dev	3 minutes CPU	2 minutes test		40 minutes
+I wanted to develop a game like an original NES model. I asked ChatGPT, Claude,
+and Gemini for three ideas. ChatGPT game up with my favorite idea. It is a
+substantial dialog. It's saved here in: Inital Dialog 260629.txt
+The initial game is super, super basic. Even there, there was a defect. Lines
+appears between squares on the grid. ChatGPT fixed on the first attempt.
+In that initial grid, ChatGPT provided why it set out to do and what's next.
+I will test what it's implemented, and add features from there.
+
+
+
+TEST Single HTML file.
+TEST  Internal resolution of 256×240.
+TEST  Displayed at 512×480.
+TEST  Pixel-perfect scaling.
+TEST  Title screen.
+TEST  Smooth camera scrolling.
+TEST  Top-down movement.
+TEST  Tile-based world.
+TEST  Procedurally drawn sprites (no images).
+TEST  Castle, road, grass, trees, and village.
+TEST  Mission text.
+TEST  Win condition.
+TODO Collision (trees and obstacles block movement).
+TODO A timer.
+TODO Three lives.
+TODO Wolves and bandits.
+TODO Rivers and bridges.
+TODO Better NES-style sprite artwork.
+TODO A more polished title screen.
+TODO An authentic HUD with score and time.
+TODO Cleaner camera behavior.
+
+
