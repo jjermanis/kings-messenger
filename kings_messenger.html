@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>King Messenger</title>
+
+<style>
+body{
+    margin:0;
+    background:#202020;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+    overflow:hidden;
+}
+
+canvas{
+    width:512px;
+    height:480px;
+    image-rendering:pixelated;
+    image-rendering:crisp-edges;
+    border:4px solid white;
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="game" width="256" height="240"></canvas>
+
+<script>
+
+const SCREEN_WIDTH=256;
+const SCREEN_HEIGHT=240;
+
+const TILE_SIZE=16;
+
+const TILE = {
+    GRASS: 0,
+    ROAD: 1,
+    TREE: 2,
+    WATER: 3,
+    BRIDGE: 4,
+    CASTLE: 5,
+    VILLAGE: 6
+};
+
+const TILE_SOLID = {
+    [TILE.GRASS]: false,
+    [TILE.ROAD]: false,
+    [TILE.TREE]: true,
+    [TILE.WATER]: false,
+    [TILE.BRIDGE]: false,
+    [TILE.CASTLE]: false,
+    [TILE.VILLAGE]: false
+};
+
+const MAP_WIDTH=40;
+const MAP_HEIGHT=30;
+
+const canvas=document.getElementById("game");
+const ctx=canvas.getContext("2d");
+
+ctx.imageSmoothingEnabled=false;
+
+const State={
+    TITLE:0,
+    PLAY:1,
+    WIN:2
+};
+
+let gameState=State.TITLE;
+
+const keys={};
+
+document.addEventListener("keydown",(e)=>{
+    keys[e.key]=true;
+
+    if(gameState===State.TITLE && e.key==="Enter"){
+        gameState=State.PLAY;
+    }
+});
+
+document.addEventListener("keyup",(e)=>{
+    keys[e.key]=false;
+});
+
+const map=[];
+
+for(let y=0;y<MAP_HEIGHT;y++){
+
+    let row=[];
+
+    for(let x=0;x<MAP_WIDTH;x++){
+
+        row.push(0);
+
+    }
+
+    map.push(row);
+
+}
+
+//
+// Build a simple route
+//
+
+for(let x=2;x<38;x++){
+
+    map[15][x]=TILE.ROAD;
+
+}
+
+map[15][2]=TILE.CASTLE;
+map[15][37]=TILE.VILLAGE;
+
+//
+// Forest
+//
+
+for(let y=8;y<23;y++){
+
+    for(let x=10;x<18;x++){
+
+        if(Math.random()<0.35){
+
+            map[y][x]=TILE.TREE;
+
+        }
+
+    }
+
+}
+
+const player={
+
+    x:40,
+    y:15*TILE_SIZE,
+
+    width:8,
+    height:8,
+
+    speed:1
+
+};
+
+function drawGrass(x,y){
+
+    ctx.fillStyle="#4CAF50";
+    ctx.fillRect(x,y,TILE_SIZE,TILE_SIZE);
+
+}
+
+function drawRoad(x,y){
+
+    ctx.fillStyle="#B07D45";
+    ctx.fillRect(x,y,TILE_SIZE,TILE_SIZE);
+
+}
+
+function drawTree(x,y){
+
+    drawGrass(x,y);
+
+    ctx.fillStyle="#0A5A0A";
+    ctx.fillRect(x+4,y+2,8,8);
+
+    ctx.fillStyle="#704020";
+    ctx.fillRect(x+7,y+10,2,5);
+
+}
+
+function drawCastle(x,y){
+
+    ctx.fillStyle="#B0B0B0";
+    ctx.fillRect(x+1,y+2,14,12);
+
+    ctx.fillStyle="#808080";
+
+    ctx.fillRect(x+3,y,2,4);
+    ctx.fillRect(x+11,y,2,4);
+
+}
+
+function drawVillage(x,y){
+
+    ctx.fillStyle="#DDDD88";
+    ctx.fillRect(x+2,y+5,12,9);
+
+    ctx.fillStyle="#AA3333";
+    ctx.beginPath();
+    ctx.moveTo(x+1,y+5);
+    ctx.lineTo(x+8,y);
+    ctx.lineTo(x+15,y+5);
+    ctx.fill();
+
+}
+
+function drawPlayer(){
+
+    const px = Math.floor(player.x) - camera.renderX;
+    const py = Math.floor(player.y) - camera.renderY;
+
+    ctx.fillStyle="#0000AA";
+    ctx.fillRect(
+        px+4,
+        py+2,
+        8,
+        12);
+
+    ctx.fillStyle="#FFFF66";
+    ctx.fillRect(
+        px+5,
+        py,
+        6,
+        5);
+
+}
+
+const camera={
+    x:0,
+    y:0,
+    renderX:0,
+    renderY:0
+};
+
+function isSolidAt(worldX, worldY){
+
+    const tileX = Math.floor(worldX / TILE_SIZE);
+    const tileY = Math.floor(worldY / TILE_SIZE);
+
+    if(tileX < 0 || tileY < 0 ||
+       tileX >= MAP_WIDTH ||
+       tileY >= MAP_HEIGHT)
+        return true;
+
+    return TILE_SOLID[ map[tileY][tileX] ];
+
+}
+
+function update(){
+
+    if(gameState!==State.PLAY) return;
+
+let dx = 0;
+let dy = 0;
+
+if(keys["ArrowLeft"])  dx = -player.speed;
+if(keys["ArrowRight"]) dx =  player.speed;
+if(keys["ArrowUp"])    dy = -player.speed;
+if(keys["ArrowDown"])  dy =  player.speed;
+
+// Horizontal movement
+
+let nextX = player.x + dx;
+
+if(
+    !isSolidAt(nextX + 4, player.y + 4) &&
+    !isSolidAt(nextX + 11, player.y + 4) &&
+    !isSolidAt(nextX + 4, player.y + 11) &&
+    !isSolidAt(nextX + 11, player.y + 11)
+){
+    player.x = nextX;
+}
+
+// Vertical movement
+
+let nextY = player.y + dy;
+
+if(
+    !isSolidAt(player.x + 4, nextY + 4) &&
+    !isSolidAt(player.x + 11, nextY + 4) &&
+    !isSolidAt(player.x + 4, nextY + 11) &&
+    !isSolidAt(player.x + 11, nextY + 11)
+){
+    player.y = nextY;
+}
+
+    if(player.x<0) player.x=0;
+    if(player.y<0) player.y=0;
+
+    if(player.x>MAP_WIDTH*TILE_SIZE-TILE_SIZE)
+        player.x=MAP_WIDTH*TILE_SIZE-TILE_SIZE;
+
+    if(player.y>MAP_HEIGHT*TILE_SIZE-TILE_SIZE)
+        player.y=MAP_HEIGHT*TILE_SIZE-TILE_SIZE;
+
+    camera.x=player.x-SCREEN_WIDTH/2;
+    camera.y=player.y-SCREEN_HEIGHT/2;
+
+    if(camera.x<0) camera.x=0;
+    if(camera.y<0) camera.y=0;
+
+    const maxCamX=MAP_WIDTH*TILE_SIZE-SCREEN_WIDTH;
+    const maxCamY=MAP_HEIGHT*TILE_SIZE-SCREEN_HEIGHT;
+
+    if(camera.x>maxCamX) camera.x=maxCamX;
+    if(camera.y>maxCamY) camera.y=maxCamY;
+
+    camera.renderX = Math.floor(camera.x);
+    camera.renderY = Math.floor(camera.y);
+
+    if(player.x>37*TILE_SIZE){
+
+        gameState=State.WIN;
+
+    }
+
+}
+
+function drawMap(){
+
+    let startX=Math.floor(camera.renderX/TILE_SIZE);
+    let startY=Math.floor(camera.renderY/TILE_SIZE);
+
+    let endX=startX+17;
+    let endY=startY+16;
+
+    for(let y=startY;y<=endY;y++){
+
+        for(let x=startX;x<=endX;x++){
+
+            if(x<0||y<0||x>=MAP_WIDTH||y>=MAP_HEIGHT)
+                continue;
+
+            const tile=map[y][x];
+
+            const sx = x*TILE_SIZE - camera.renderX;
+            const sy = y*TILE_SIZE - camera.renderY;
+
+            switch(tile){
+
+                case 0:
+                    drawGrass(sx,sy);
+                    break;
+
+                case 1:
+                    drawRoad(sx,sy);
+                    break;
+
+                case 2:
+                    drawTree(sx,sy);
+                    break;
+
+                case 5:
+                    drawCastle(sx,sy);
+                    break;
+
+                case 6:
+                    drawVillage(sx,sy);
+                    break;
+
+            }
+
+        }
+
+    }
+
+}
+
+function drawHUD(){
+
+    ctx.fillStyle="#000000";
+    ctx.fillRect(0,0,256,16);
+
+    ctx.fillStyle="white";
+    ctx.font="8px monospace";
+
+    ctx.fillText("MISSION: DELIVER TREATY",4,11);
+
+}
+
+function render(){
+
+    ctx.fillStyle="black";
+    ctx.fillRect(0,0,256,240);
+
+    if(gameState===State.TITLE){
+
+        ctx.fillStyle="white";
+        ctx.font="16px monospace";
+        ctx.fillText("KING MESSENGER",28,90);
+
+        ctx.font="8px monospace";
+        ctx.fillText("PRESS ENTER",86,130);
+
+        return;
+
+    }
+
+    if(gameState===State.WIN){
+
+        ctx.fillStyle="white";
+        ctx.font="16px monospace";
+        ctx.fillText("MISSION",72,90);
+        ctx.fillText("COMPLETE",68,112);
+
+        ctx.font="8px monospace";
+        ctx.fillText("Refresh to play again",54,160);
+
+        return;
+
+    }
+
+    drawMap();
+
+    drawPlayer();
+
+    drawHUD();
+
+}
+
+function loop(){
+
+    update();
+
+    render();
+
+    requestAnimationFrame(loop);
+
+}
+
+loop();
+
+</script>
+
+</body>
+</html>

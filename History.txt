@@ -1,4 +1,5 @@
 Version 01.01	35 minutes dev	3 minutes CPU	2 minutes test		40 minutes
+
 I wanted to develop a game like an original NES model. I asked ChatGPT, Claude,
 and Gemini for three ideas. ChatGPT game up with my favorite idea. It is a
 substantial dialog. It's saved here in: Inital Dialog 260629.txt
@@ -8,20 +9,19 @@ In that initial grid, ChatGPT provided why it set out to do and what's next.
 I will test what it's implemented, and add features from there.
 
 
+Version 01.02	12 minutes dev	1 minute CPU	5 minutes test		58 minutes
 
-TEST Single HTML file.
-TEST  Internal resolution of 256×240.
-TEST  Displayed at 512×480.
-TEST  Pixel-perfect scaling.
-TEST  Title screen.
-TEST  Smooth camera scrolling.
-TEST  Top-down movement.
-TEST  Tile-based world.
-TEST  Procedurally drawn sprites (no images).
-TEST  Castle, road, grass, trees, and village.
-TEST  Mission text.
-TEST  Win condition.
-TODO Collision (trees and obstacles block movement).
+All of the basic features have passed. Now I am working on adding features. One of
+them is to add collisions with objects. ChatGPT gave the original version. It
+worked... but the player wouldn't move. I was able to debug that: the player
+starts in the village, and that cannot be moved into. I changed it to allow
+players to enter the village (and castle). It works, with collision implemented.
+The collision is a little off. It seems based on the pixels, not the shape.
+Added that to the TODO list.
+
+
+
+TODO Collision is inconsistent. Need a better approach that looks better.
 TODO A timer.
 TODO Three lives.
 TODO Wolves and bandits.
