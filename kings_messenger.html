@@ -56,6 +56,25 @@ const TILE_SOLID = {
     [TILE.VILLAGE]: false
 };
 
+const TILE_COLLISION = {
+
+    [TILE.GRASS]:   null,
+    [TILE.ROAD]:    null,
+    [TILE.WATER]:   null,
+    [TILE.BRIDGE]:  null,
+    [TILE.CASTLE]:  null,
+    [TILE.VILLAGE]: null,
+
+    // trunk only
+    [TILE.TREE]:{
+        x:6,
+        y:9,
+        w:4,
+        h:7
+    }
+
+};
+
 const MAP_WIDTH=40;
 const MAP_HEIGHT=30;
 
@@ -225,17 +244,71 @@ const camera={
     renderY:0
 };
 
-function isSolidAt(worldX, worldY){
+function rectsOverlap(ax, ay, aw, ah,
+                      bx, by, bw, bh){
 
-    const tileX = Math.floor(worldX / TILE_SIZE);
-    const tileY = Math.floor(worldY / TILE_SIZE);
+    return (
+        ax < bx + bw &&
+        ax + aw > bx &&
+        ay < by + bh &&
+        ay + ah > by
+    );
 
-    if(tileX < 0 || tileY < 0 ||
-       tileX >= MAP_WIDTH ||
-       tileY >= MAP_HEIGHT)
-        return true;
+}
 
-    return TILE_SOLID[ map[tileY][tileX] ];
+function collidesWithWorld(px, py){
+
+    const playerLeft   = px + 4;
+    const playerTop    = py + 4;
+    const playerWidth  = player.width;
+    const playerHeight = player.height;
+
+    const startTileX = Math.floor(playerLeft / TILE_SIZE);
+    const startTileY = Math.floor(playerTop / TILE_SIZE);
+
+    const endTileX =
+        Math.floor((playerLeft + playerWidth) / TILE_SIZE);
+
+    const endTileY =
+        Math.floor((playerTop + playerHeight) / TILE_SIZE);
+
+    for(let ty=startTileY; ty<=endTileY; ty++){
+
+        for(let tx=startTileX; tx<=endTileX; tx++){
+
+            if(tx<0 || ty<0 ||
+               tx>=MAP_WIDTH ||
+               ty>=MAP_HEIGHT)
+                return true;
+
+            const tile = map[ty][tx];
+
+            const shape = TILE_COLLISION[tile];
+
+            if(shape==null)
+                continue;
+
+            if(rectsOverlap(
+
+                playerLeft,
+                playerTop,
+                playerWidth,
+                playerHeight,
+
+                tx*TILE_SIZE + shape.x,
+                ty*TILE_SIZE + shape.y,
+                shape.w,
+                shape.h
+
+            )){
+                return true;
+            }
+
+        }
+
+    }
+
+    return false;
 
 }
 
@@ -255,26 +328,20 @@ if(keys["ArrowDown"])  dy =  player.speed;
 
 let nextX = player.x + dx;
 
-if(
-    !isSolidAt(nextX + 4, player.y + 4) &&
-    !isSolidAt(nextX + 11, player.y + 4) &&
-    !isSolidAt(nextX + 4, player.y + 11) &&
-    !isSolidAt(nextX + 11, player.y + 11)
-){
+if(!collidesWithWorld(nextX, player.y)){
+
     player.x = nextX;
+
 }
 
 // Vertical movement
 
 let nextY = player.y + dy;
 
-if(
-    !isSolidAt(player.x + 4, nextY + 4) &&
-    !isSolidAt(player.x + 11, nextY + 4) &&
-    !isSolidAt(player.x + 4, nextY + 11) &&
-    !isSolidAt(player.x + 11, nextY + 11)
-){
+if(!collidesWithWorld(player.x, nextY)){
+
     player.y = nextY;
+
 }
 
     if(player.x<0) player.x=0;

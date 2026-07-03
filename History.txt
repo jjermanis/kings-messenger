@@ -20,8 +20,14 @@ The collision is a little off. It seems based on the pixels, not the shape.
 Added that to the TODO list.
 
 
+Version 01.03	7 minutes	0 minutes CPU	2 minutes test		1 hour 7
 
-TODO Collision is inconsistent. Need a better approach that looks better.
+ChatGPT had a similar thought. Instead of testing the grid, it checks rectangles
+around the objects. This works well. There are some UI quirks - the player
+always appears in the foreground. But it is definitely better.
+
+
+
 TODO A timer.
 TODO Three lives.
 TODO Wolves and bandits.
@@ -30,5 +36,7 @@ TODO Better NES-style sprite artwork.
 TODO A more polished title screen.
 TODO An authentic HUD with score and time.
 TODO Cleaner camera behavior.
+Maybe Better handling for character in front of or behind objects. Right now, it
+	looks like the character is in front of everything.
 
 
