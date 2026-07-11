@@ -78,6 +78,11 @@ const TILE_COLLISION = {
 const MAP_WIDTH=40;
 const MAP_HEIGHT=30;
 
+const PLAYER_START_X = 40;
+const PLAYER_START_Y = 15 * TILE_SIZE;
+
+const WOLF_SPEED = 2;
+
 const canvas=document.getElementById("game");
 const ctx=canvas.getContext("2d");
 
@@ -152,15 +157,34 @@ for(let y=8;y<23;y++){
 
 }
 
-const player={
+const player = {
 
-    x:40,
-    y:15*TILE_SIZE,
+    x: PLAYER_START_X,
+    y: PLAYER_START_Y,
 
     width:8,
     height:8,
 
-    speed:1
+    speed:1,
+
+    lives:3
+
+};
+
+const wolf = {
+
+    startX: 300,
+    startY: 15 * TILE_SIZE,
+
+    x:300,
+    y:15 * TILE_SIZE,
+
+    width:8,
+    height:8,
+
+    speed:WOLF_SPEED,
+
+    direction:-1
 
 };
 
@@ -234,6 +258,24 @@ function drawPlayer(){
         py,
         6,
         5);
+
+}
+
+function drawWolf(){
+
+    const x = Math.floor(wolf.x) - camera.renderX;
+    const y = Math.floor(wolf.y) - camera.renderY;
+
+    ctx.fillStyle="#555555";
+
+    ctx.fillRect(x+3,y+5,10,6);
+
+    ctx.fillRect(x+1,y+7,3,3);
+    ctx.fillRect(x+12,y+7,3,3);
+
+    ctx.fillStyle="#FFFFFF";
+
+    ctx.fillRect(x+9,y+6,2,2);
 
 }
 
@@ -312,6 +354,53 @@ function collidesWithWorld(px, py){
 
 }
 
+function updateWolf(){
+
+    let nextX = wolf.x + wolf.direction * wolf.speed;
+
+    if(collidesWithWorld(nextX, wolf.y)){
+
+        wolf.direction *= -1;
+
+    }
+    else{
+
+        wolf.x = nextX;
+
+    }
+
+}
+
+function playerHitsWolf(){
+
+    return rectsOverlap(
+
+        player.x + 4,
+        player.y + 4,
+        player.width,
+        player.height,
+
+        wolf.x + 4,
+        wolf.y + 4,
+        wolf.width,
+        wolf.height
+
+    );
+
+}
+
+function resetPositions(){
+
+    player.x = PLAYER_START_X;
+    player.y = PLAYER_START_Y;
+
+    wolf.x = wolf.startX;
+    wolf.y = wolf.startY;
+
+    wolf.direction = -1;
+
+}
+
 function update(){
 
     if(gameState!==State.PLAY) return;
@@ -358,6 +447,23 @@ if(!collidesWithWorld(player.x, nextY)){
 
     if(camera.x<0) camera.x=0;
     if(camera.y<0) camera.y=0;
+
+updateWolf();
+
+if(playerHitsWolf()){
+
+    player.lives--;
+
+    resetPositions();
+
+    if(player.lives<=0){
+
+        gameState = State.WIN;   // temporary
+        // We'll introduce GAME_OVER in the next commit.
+
+    }
+
+}
 
     const maxCamX=MAP_WIDTH*TILE_SIZE-SCREEN_WIDTH;
     const maxCamY=MAP_HEIGHT*TILE_SIZE-SCREEN_HEIGHT;
@@ -434,8 +540,12 @@ function drawHUD(){
     ctx.fillStyle="white";
     ctx.font="8px monospace";
 
-    ctx.fillText("MISSION: DELIVER TREATY",4,11);
-
+    ctx.fillText(
+        "LIVES " + player.lives +
+        "   DELIVER TREATY",
+        4,
+        11
+    );
 }
 
 function render(){
@@ -471,6 +581,8 @@ function render(){
     }
 
     drawMap();
+
+    drawWolf();
 
     drawPlayer();
 

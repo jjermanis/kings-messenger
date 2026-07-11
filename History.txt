@@ -20,17 +20,23 @@ The collision is a little off. It seems based on the pixels, not the shape.
 Added that to the TODO list.
 
 
-Version 01.03	7 minutes	0 minutes CPU	2 minutes test		1 hour 7
+Version 01.03	7 minutes dev	0 minutes CPU	2 minutes test		1 hour 7
 
 ChatGPT had a similar thought. Instead of testing the grid, it checks rectangles
 around the objects. This works well. There are some UI quirks - the player
 always appears in the foreground. But it is definitely better.
 
 
+Version 01.04	22 minutes dev	1 minute CPU	2 minutes test		1 hour
+
+Adding the enemies. In this version, added a wolf. To start with one, but will
+add more. A lot of changes were made, but it works well and is a solid basis
+for this enemy.
+
 
 TODO A timer.
 TODO Three lives.
-TODO Wolves and bandits.
+TODO Add bandits.
 TODO Rivers and bridges.
 TODO Better NES-style sprite artwork.
 TODO A more polished title screen.
