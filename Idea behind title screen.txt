@@ -1,0 +1,10 @@
+The game is supposed to look like an NES game. I want to make the title screen
+look like a standard opening screen.
+
+A great example is 1942. It is seen in this page:
+https://www.michaelfogleman.com/static/nes/
+
+I want the title King's Messenger large and up top.
+I want there text to say Start. (press Enter) is parentheses after.
+I want the copyright at the bottom, which will be my license.
+

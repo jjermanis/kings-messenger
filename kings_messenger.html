@@ -83,6 +83,10 @@ const PLAYER_START_Y = 15 * TILE_SIZE;
 
 const WOLF_SPEED = 2;
 
+const BANDIT_SPEED = 1;
+const BANDIT_DETECTION_RANGE = 64;
+const BANDIT_CHASE_DISTANCE = 128;
+
 const canvas=document.getElementById("game");
 const ctx=canvas.getContext("2d");
 
@@ -92,6 +96,14 @@ const State={
     TITLE:0,
     PLAY:1,
     WIN:2
+};
+
+const BanditState = {
+
+    PATROL:0,
+    CHASE:1,
+    RETURN:2
+
 };
 
 let gameState=State.TITLE;
@@ -188,6 +200,27 @@ const wolf = {
 
 };
 
+const bandit = {
+
+    startX:430,
+    startY:12*TILE_SIZE,
+
+    x:430,
+    y:12*TILE_SIZE,
+
+    width:8,
+    height:8,
+
+   
+ speed:BANDIT_SPEED,
+
+    direction:-1,
+
+    patrolAxis:"horizontal",
+
+    state:BanditState.PATROL
+
+};
 function drawGrass(x,y){
 
     ctx.fillStyle="#4CAF50";
@@ -279,6 +312,21 @@ function drawWolf(){
 
 }
 
+function drawBandit(){
+
+    const x = Math.floor(bandit.x)-camera.renderX;
+    const y = Math.floor(bandit.y)-camera.renderY;
+
+    ctx.fillStyle="#884400";
+
+    ctx.fillRect(x+3,y+2,10,12);
+
+    ctx.fillStyle="#FFFF88";
+
+    ctx.fillRect(x+5,y,6,5);
+
+}
+
 const camera={
     x:0,
     y:0,
@@ -354,6 +402,29 @@ function collidesWithWorld(px, py){
 
 }
 
+function distanceSquared(x1,y1,x2,y2){
+
+    const dx=x2-x1;
+    const dy=y2-y1;
+
+    return dx*dx+dy*dy;
+
+}
+
+function moveBandit(dx,dy){
+
+    let nextX = bandit.x + dx;
+
+    if(!collidesWithWorld(nextX,bandit.y))
+        bandit.x = nextX;
+
+    let nextY = bandit.y + dy;
+
+    if(!collidesWithWorld(bandit.x,nextY))
+        bandit.y = nextY;
+
+}
+
 function updateWolf(){
 
     let nextX = wolf.x + wolf.direction * wolf.speed;
@@ -367,6 +438,137 @@ function updateWolf(){
 
         wolf.x = nextX;
 
+    }
+
+}
+
+function updateBandit(){
+
+    switch(bandit.state){
+
+        case BanditState.PATROL:
+
+            if(collidesWithWorld(
+                bandit.x + bandit.direction*bandit.speed,
+                bandit.y))
+            {
+                bandit.direction*=-1;
+            }
+            else{
+
+                bandit.x +=
+                    bandit.direction*bandit.speed;
+
+            }
+
+            if(
+                distanceSquared(
+
+                    player.x,
+                    player.y,
+
+                    bandit.x,
+                    bandit.y
+
+                )
+
+                <
+
+                BANDIT_DETECTION_RANGE*
+                BANDIT_DETECTION_RANGE
+
+            ){
+
+                bandit.state =
+                    BanditState.CHASE;
+
+            }
+
+            break;
+
+        case BanditState.CHASE: {
+
+            let dx = player.x-bandit.x;
+            let dy = player.y-bandit.y;
+
+            if(Math.abs(dx)>Math.abs(dy)){
+
+                moveBandit(
+                    Math.sign(dx)*bandit.speed,
+                    0);
+
+            }
+            else{
+
+                moveBandit(
+                    0,
+                    Math.sign(dy)*bandit.speed);
+
+            }
+
+            if(
+
+                distanceSquared(
+
+                    bandit.startX,
+                    bandit.startY,
+
+                    bandit.x,
+                    bandit.y
+
+                )
+
+                >
+
+                BANDIT_CHASE_DISTANCE*
+                BANDIT_CHASE_DISTANCE
+
+            ){
+
+                bandit.state =
+                    BanditState.RETURN;
+
+            }
+
+            break;
+        }
+        case BanditState.RETURN: {
+
+            let dx = bandit.startX-bandit.x;
+            let dy = bandit.startY-bandit.y;
+
+            if(Math.abs(dx)>Math.abs(dy)){
+
+                moveBandit(
+                    Math.sign(dx)*bandit.speed,
+                    0);
+
+            }
+            else{
+
+                moveBandit(
+                    0,
+                    Math.sign(dy)*bandit.speed);
+
+            }
+
+            if(
+
+                Math.abs(dx)<1 &&
+                Math.abs(dy)<1
+
+            ){
+
+                bandit.x=bandit.startX;
+                bandit.y=bandit.startY;
+
+                bandit.state=
+                    BanditState.PATROL;
+
+            }
+
+            break;
+        }
     }
 
 }
@@ -389,6 +591,24 @@ function playerHitsWolf(){
 
 }
 
+function playerHitsBandit(){
+
+    return rectsOverlap(
+
+        player.x+4,
+        player.y+4,
+        player.width,
+        player.height,
+
+        bandit.x+4,
+        bandit.y+4,
+        bandit.width,
+        bandit.height
+
+    );
+
+}
+
 function resetPositions(){
 
     player.x = PLAYER_START_X;
@@ -396,9 +616,11 @@ function resetPositions(){
 
     wolf.x = wolf.startX;
     wolf.y = wolf.startY;
-
     wolf.direction = -1;
 
+    bandit.x = bandit.startX;
+    bandit.y = bandit.startY;
+    bandit.state = BanditState.PATROL;
 }
 
 function update(){
@@ -450,6 +672,8 @@ if(!collidesWithWorld(player.x, nextY)){
 
 updateWolf();
 
+updateBandit();
+
 if(playerHitsWolf()){
 
     player.lives--;
@@ -462,6 +686,18 @@ if(playerHitsWolf()){
         // We'll introduce GAME_OVER in the next commit.
 
     }
+
+}
+
+if(playerHitsBandit()){
+
+    player.lives--;
+
+    resetPositions();
+
+    bandit.x = bandit.startX;
+    bandit.y = bandit.startY;
+    bandit.state = BanditState.PATROL;
 
 }
 
@@ -583,6 +819,8 @@ function render(){
     drawMap();
 
     drawWolf();
+
+    drawBandit();
 
     drawPlayer();
 

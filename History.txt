@@ -27,21 +27,37 @@ around the objects. This works well. There are some UI quirks - the player
 always appears in the foreground. But it is definitely better.
 
 
-Version 01.04	22 minutes dev	1 minute CPU	2 minutes test		1 hour
+Version 01.04	22 minutes dev	1 minute CPU	2 minutes test		1 hour 32
 
 Adding the enemies. In this version, added a wolf. To start with one, but will
 add more. A lot of changes were made, but it works well and is a solid basis
 for this enemy.
 
 
-TODO A timer.
-TODO Three lives.
-TODO Add bandits.
+Version 01.05	31 minutes dev	1 minute CPU	3 minutes test		2 hours 7
+
+In this version, the other enemy: the bandit. This was more involved: it would
+use mild AI to chase the player. When the bandit gets close to the player, it
+will chase, for a bit. There was a syntax error for what that change create.
+It was easy to identify using the browser inspection. ChatGPT fixed the problem.
+
+Note for continuing. Look in the ChatGPT dialog for "Here's how I'd build it"
+Under that look at Milestone 2. We need those implemented next.
+Could also look for "What will be added in the next version"
+
+
 TODO Rivers and bridges.
+TODO Three lives.
+TODO A timer.
+TODO Levels
 TODO Better NES-style sprite artwork.
 TODO A more polished title screen.
+TODO Animation for an end of life
 TODO An authentic HUD with score and time.
 TODO Cleaner camera behavior.
+TODO Sound
+TODO Add MIT License
+TODO browse tab icon
 Maybe Better handling for character in front of or behind objects. Right now, it
 	looks like the character is in front of everything.
 
