@@ -50,7 +50,7 @@ const TILE_SOLID = {
     [TILE.GRASS]: false,
     [TILE.ROAD]: false,
     [TILE.TREE]: true,
-    [TILE.WATER]: false,
+    [TILE.WATER]: true,
     [TILE.BRIDGE]: false,
     [TILE.CASTLE]: false,
     [TILE.VILLAGE]: false
@@ -151,6 +151,19 @@ for(let x=2;x<38;x++){
 map[15][2]=TILE.CASTLE;
 map[15][37]=TILE.VILLAGE;
 
+// Demonstration river
+
+for(let y=4; y<24; y++){
+
+    map[y][20] = TILE.WATER;
+    map[y][21] = TILE.WATER;
+}
+
+// Demonstration bridge 
+
+map[15][20] = TILE.BRIDGE;
+map[15][21] = TILE.BRIDGE;
+
 //
 // Forest
 //
@@ -244,6 +257,47 @@ function drawTree(x,y){
 
     ctx.fillStyle="#704020";
     ctx.fillRect(x+7,y+10,2,5);
+
+}
+
+function drawWater(x, y){
+
+    // Dark blue background
+
+    ctx.fillStyle = "#2050C0";
+    ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
+
+    // Light blue ripples
+
+    ctx.fillStyle = "#70B8FF";
+
+    ctx.fillRect(x+2, y+3, 3, 1);
+    ctx.fillRect(x+8, y+6, 4, 1);
+    ctx.fillRect(x+4, y+11, 5, 1);
+
+}
+
+function drawBridge(x, y){
+
+    // Wooden deck
+
+    ctx.fillStyle = "#8B5A2B";
+    ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
+
+    // Side rails
+
+    ctx.fillStyle = "#5A3515";
+
+    ctx.fillRect(x, 0 + y, TILE_SIZE, 2);
+    ctx.fillRect(x, y + 14, TILE_SIZE, 2);
+
+    // Planks
+
+    ctx.fillStyle = "#C09050";
+
+    ctx.fillRect(x + 2, y + 4, 12, 1);
+    ctx.fillRect(x + 2, y + 8, 12, 1);
+    ctx.fillRect(x + 2, y + 12, 12, 1);
 
 }
 
@@ -373,6 +427,13 @@ function collidesWithWorld(px, py){
 
             const tile = map[ty][tx];
 
+            // Full-tile collision (water, future walls, etc.)
+            if(TILE_SOLID[tile]){
+
+                if(tile != TILE.TREE)
+                    return true;
+            }
+
             const shape = TILE_COLLISION[tile];
 
             if(shape==null)
@@ -411,19 +472,22 @@ function distanceSquared(x1,y1,x2,y2){
 
 }
 
-function moveBandit(dx,dy){
+function moveBandit(dx, dy){
 
     let nextX = bandit.x + dx;
-
-    if(!collidesWithWorld(nextX,bandit.y))
-        bandit.x = nextX;
-
     let nextY = bandit.y + dy;
 
-    if(!collidesWithWorld(bandit.x,nextY))
-        bandit.y = nextY;
+    if(collidesWithWorld(nextX, nextY))
+        return false;
+
+    bandit.x = nextX;
+    bandit.y = nextY;
+
+    return true;
 
 }
+
+
 
 function updateWolf(){
 
@@ -488,86 +552,97 @@ function updateBandit(){
 
         case BanditState.CHASE: {
 
-            let dx = player.x-bandit.x;
-            let dy = player.y-bandit.y;
+    let dx = player.x - bandit.x;
+    let dy = player.y - bandit.y;
 
-            if(Math.abs(dx)>Math.abs(dy)){
+    const moveX = Math.sign(dx) * bandit.speed;
+    const moveY = Math.sign(dy) * bandit.speed;
 
-                moveBandit(
-                    Math.sign(dx)*bandit.speed,
-                    0);
+    if(Math.abs(dx) >= Math.abs(dy)){
 
-            }
-            else{
+        // Horizontal is the preferred direction
 
-                moveBandit(
-                    0,
-                    Math.sign(dy)*bandit.speed);
+        if(!moveBandit(moveX,0)){
 
-            }
+            moveBandit(0,moveY);
 
-            if(
+        }
 
-                distanceSquared(
+    }
+    else{
 
-                    bandit.startX,
-                    bandit.startY,
+        // Vertical is the preferred direction
 
-                    bandit.x,
-                    bandit.y
+        if(!moveBandit(0,moveY)){
 
-                )
+            moveBandit(moveX,0);
 
-                >
+        }
 
-                BANDIT_CHASE_DISTANCE*
-                BANDIT_CHASE_DISTANCE
+    }
 
-            ){
+    if(
+        distanceSquared(
+            bandit.startX,
+            bandit.startY,
+            bandit.x,
+            bandit.y
+        )
+        >
+        BANDIT_CHASE_DISTANCE *
+        BANDIT_CHASE_DISTANCE
+    ){
 
-                bandit.state =
-                    BanditState.RETURN;
+        bandit.state = BanditState.RETURN;
 
-            }
+    }
 
-            break;
+    break;
         }
         case BanditState.RETURN: {
 
-            let dx = bandit.startX-bandit.x;
-            let dy = bandit.startY-bandit.y;
+    dx = bandit.startX - bandit.x;
+    dy = bandit.startY - bandit.y;
 
-            if(Math.abs(dx)>Math.abs(dy)){
+    const returnMoveX = Math.sign(dx) * bandit.speed;
+    const returnMoveY = Math.sign(dy) * bandit.speed;
 
-                moveBandit(
-                    Math.sign(dx)*bandit.speed,
-                    0);
+    if(Math.abs(dx) >= Math.abs(dy)){
 
-            }
-            else{
+        // Horizontal is the preferred direction
 
-                moveBandit(
-                    0,
-                    Math.sign(dy)*bandit.speed);
+        if(!moveBandit(returnMoveX, 0)){
 
-            }
+            moveBandit(0, returnMoveY);
 
-            if(
+        }
 
-                Math.abs(dx)<1 &&
-                Math.abs(dy)<1
+    }
+    else{
 
-            ){
+        // Vertical is the preferred direction
 
-                bandit.x=bandit.startX;
-                bandit.y=bandit.startY;
+        if(!moveBandit(0, returnMoveY)){
 
-                bandit.state=
-                    BanditState.PATROL;
+            moveBandit(returnMoveX, 0);
 
-            }
+        }
 
-            break;
+    }
+
+    // Have we reached home?
+
+    if(Math.abs(dx) < bandit.speed &&
+       Math.abs(dy) < bandit.speed){
+
+        bandit.x = bandit.startX;
+        bandit.y = bandit.startY;
+
+        bandit.state = BanditState.PATROL;
+
+    }
+
+    break;
         }
     }
 
@@ -740,23 +815,31 @@ function drawMap(){
 
             switch(tile){
 
-                case 0:
+                case TILE.GRASS:
                     drawGrass(sx,sy);
                     break;
 
-                case 1:
+                case TILE.ROAD:
                     drawRoad(sx,sy);
                     break;
 
-                case 2:
+                case TILE.TREE:
                     drawTree(sx,sy);
                     break;
 
-                case 5:
+                case TILE.WATER:
+                    drawWater(sx,sy);
+                    break;
+
+                case TILE.BRIDGE:
+                    drawBridge(sx,sy);
+                    break;
+
+                case TILE.CASTLE:
                     drawCastle(sx,sy);
                     break;
 
-                case 6:
+                case TILE.VILLAGE:
                     drawVillage(sx,sy);
                     break;
 

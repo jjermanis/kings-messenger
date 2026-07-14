@@ -46,7 +46,15 @@ Under that look at Milestone 2. We need those implemented next.
 Could also look for "What will be added in the next version"
 
 
-TODO Rivers and bridges.
+Version 01.06	35 minutes dev	0 minutes CPU	4 minutes test		2 hours 46
+
+More key characters: rivers and bridges. This took some time, but was relatively
+smooth. The were some extensive changes, but they were all simple. There was one
+thing to tweak about the algorithm for the bandit to chase the player. But it
+was simple to design and implement.
+
+
+
 TODO Three lives.
 TODO A timer.
 TODO Levels
@@ -55,9 +63,10 @@ TODO A more polished title screen.
 TODO Animation for an end of life
 TODO An authentic HUD with score and time.
 TODO Cleaner camera behavior.
-TODO Sound
+TODO Sound - music and sound effects
 TODO Add MIT License
 TODO browse tab icon
+TODO BanditState.CHASE and BanditState.RETURN are nearly identical. Refactor.
 Maybe Better handling for character in front of or behind objects. Right now, it
 	looks like the character is in front of everything.
 
