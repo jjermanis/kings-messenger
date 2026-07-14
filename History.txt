@@ -54,9 +54,16 @@ thing to tweak about the algorithm for the bandit to chase the player. But it
 was simple to design and implement.
 
 
+Version 01.07	29 minutes dev	0 minutes CPU	3 minutes test		3 hours 18
 
-TODO Three lives.
-TODO A timer.
+Some small cleanup at this point. Like many video game, you start with three
+lives. On the screen, it shows LIVES 3. Usually, it would show 2: the number of
+remaining lines. Made that change. Also, there was a timer discussed in the
+design, but it was not implemented at all. Now, each life starts with a timer of
+200 seconds. You lose a life if the countdown goes to 0.
+
+
+
 TODO Levels
 TODO Better NES-style sprite artwork.
 TODO A more polished title screen.

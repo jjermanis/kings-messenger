@@ -95,7 +95,8 @@ ctx.imageSmoothingEnabled=false;
 const State={
     TITLE:0,
     PLAY:1,
-    WIN:2
+    WIN:2,
+    GAME_OVER:3
 };
 
 const BanditState = {
@@ -107,6 +108,7 @@ const BanditState = {
 };
 
 let gameState=State.TITLE;
+let lastTimerTick = 0;
 
 const keys={};
 
@@ -115,6 +117,8 @@ document.addEventListener("keydown",(e)=>{
 
     if(gameState===State.TITLE && e.key==="Enter"){
         gameState=State.PLAY;
+        player.timeRemaining = 200;
+        lastTimerTick = performance.now();
     }
 });
 
@@ -192,8 +196,9 @@ const player = {
 
     speed:1,
 
-    lives:3
+    remainingLives:2,
 
+    timeRemaining:200
 };
 
 const wolf = {
@@ -684,6 +689,21 @@ function playerHitsBandit(){
 
 }
 
+function loseLife(){
+
+    player.remainingLives--;
+
+    if(player.remainingLives < 0){
+
+        gameState = State.WIN;   // Temporary until GAME_OVER exists.
+        return;
+
+    }
+
+    resetPositions();
+
+}
+
 function resetPositions(){
 
     player.x = PLAYER_START_X;
@@ -696,11 +716,31 @@ function resetPositions(){
     bandit.x = bandit.startX;
     bandit.y = bandit.startY;
     bandit.state = BanditState.PATROL;
+
+    player.timeRemaining = 200;
+    lastTimerTick = performance.now();
 }
 
 function update(){
 
     if(gameState!==State.PLAY) return;
+
+const now = performance.now();
+
+if(now - lastTimerTick >= 1000){
+
+    player.timeRemaining--;
+
+    lastTimerTick += 1000;
+
+    if(player.timeRemaining <= 0){
+
+        loseLife();
+        return;
+
+    }
+
+}
 
 let dx = 0;
 let dy = 0;
@@ -751,29 +791,13 @@ updateBandit();
 
 if(playerHitsWolf()){
 
-    player.lives--;
-
-    resetPositions();
-
-    if(player.lives<=0){
-
-        gameState = State.WIN;   // temporary
-        // We'll introduce GAME_OVER in the next commit.
-
-    }
+    loseLife();
 
 }
 
 if(playerHitsBandit()){
 
-    player.lives--;
-
-    resetPositions();
-
-    bandit.x = bandit.startX;
-    bandit.y = bandit.startY;
-    bandit.state = BanditState.PATROL;
-
+    loseLife();
 }
 
     const maxCamX=MAP_WIDTH*TILE_SIZE-SCREEN_WIDTH;
@@ -860,7 +884,8 @@ function drawHUD(){
     ctx.font="8px monospace";
 
     ctx.fillText(
-        "LIVES " + player.lives +
+        "LIVES " + player.remainingLives +
+        "   TIME " + player.timeRemaining +
         "   DELIVER TREATY",
         4,
         11
