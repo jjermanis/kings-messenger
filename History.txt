@@ -63,10 +63,20 @@ design, but it was not implemented at all. Now, each life starts with a timer of
 200 seconds. You lose a life if the countdown goes to 0.
 
 
+Version 01.08	39 minutes dev	1 minute CPU	x minutes test		x hours x
+
+The default title screen for this game... it was really basic and ugly. I worked
+on the title screen on another thread. The initial version ChatGPT was bad. Just
+very basic and flawed. It was going for a character-based title screen. I thought
+this looked bad and was not realistic. I asked it to create a PNG file with the
+King's Messenger name. The text still looked bad. A few troubleshooting techniques
+were tried. Ultimately, using a large font fixed it. Not perfect, but for sure
+good enough.
+
+
 
 TODO Levels
 TODO Better NES-style sprite artwork.
-TODO A more polished title screen.
 TODO Animation for an end of life
 TODO An authentic HUD with score and time.
 TODO Cleaner camera behavior.
@@ -74,6 +84,8 @@ TODO Sound - music and sound effects
 TODO Add MIT License
 TODO browse tab icon
 TODO BanditState.CHASE and BanditState.RETURN are nearly identical. Refactor.
+TODO The game shouldn't be this wide. Fine for initial version to test. But
+	no "going around" all the obstacles.
 Maybe Better handling for character in front of or behind objects. Right now, it
 	looks like the character is in front of everything.
 

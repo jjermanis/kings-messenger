@@ -90,6 +90,9 @@ const BANDIT_CHASE_DISTANCE = 128;
 const canvas=document.getElementById("game");
 const ctx=canvas.getContext("2d");
 
+const titleLogo = new Image();
+titleLogo.src = "title.png";
+
 ctx.imageSmoothingEnabled=false;
 
 const State={
@@ -881,7 +884,7 @@ function drawHUD(){
     ctx.fillRect(0,0,256,16);
 
     ctx.fillStyle="white";
-    ctx.font="8px monospace";
+    ctx.font="16px monospace";
 
     ctx.fillText(
         "LIVES " + player.remainingLives +
@@ -899,12 +902,55 @@ function render(){
 
     if(gameState===State.TITLE){
 
-        ctx.fillStyle="white";
-        ctx.font="16px monospace";
-        ctx.fillText("KING MESSENGER",28,90);
+        ctx.fillStyle="black";
+        ctx.fillRect(0,0,256,240);
 
-        ctx.font="8px monospace";
-        ctx.fillText("PRESS ENTER",86,130);
+        //
+        // Draw logo
+        //
+
+        if(titleLogo.complete){
+
+            // centered
+            ctx.drawImage(
+                titleLogo,
+                18,      // x
+                12,      // y
+                220,     // width
+                96       // height
+            );
+
+        }
+
+        //
+        // Menu text
+        //
+        ctx.textAlign="center";
+        ctx.fillStyle="white";
+        ctx.font="bold 16px monospace";
+
+        ctx.fillText(
+            "START",
+            128,
+            145
+        );
+        ctx.fillText(
+            "(press Enter to play)",
+            128,
+            159
+        );
+
+        //
+        // License
+        //
+    
+        ctx.fillText(
+            "MIT LICENSE",
+            128,
+            214
+        );
+
+        ctx.textAlign="left";
 
         return;
 
