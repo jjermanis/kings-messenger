@@ -63,7 +63,7 @@ design, but it was not implemented at all. Now, each life starts with a timer of
 200 seconds. You lose a life if the countdown goes to 0.
 
 
-Version 01.08	39 minutes dev	1 minute CPU	x minutes test		x hours x
+Version 01.08	39 minutes dev	1 minute CPU	2 minutes test		4 hours 0
 
 The default title screen for this game... it was really basic and ugly. I worked
 on the title screen on another thread. The initial version ChatGPT was bad. Just
@@ -74,8 +74,26 @@ were tried. Ultimately, using a large font fixed it. Not perfect, but for sure
 good enough.
 
 
+Version 01.09	45 minutes dev	2 minutes CPU	3 minutes test		4 hours 50
 
-TODO Levels
+One of the things needed to make a "real" version of the game is to have a way
+to great real level. With ChatGPT, we decided to create a separate app to design
+levels. We worked together on decisions. Then... I could not get him to generate
+code. It would repeatedly state what it would do, but wouldn't. Apparently, the
+AI technical term for this is "Laziness". I'd estimate it was 4 chats in about
+20 minutes to get a design planned. The next 6 chats were no new info, just a 
+summary of what it would do, but did not. It went to the limit of tokens - I had
+to wait to finish.
+After that, I went through thre stages that worked fairly well. There was a defect:
+the terrain would not show the map in the UI. ChatGPT was able to resolve that.
+This is a nice start. You can see the terrain and edit. You can see what's there.
+There are several TODOs: scrolling, placing enemies, saving. But this is a nice
+substantial start.
+
+
+TODO Level creator scrolling
+TODO Level creator enemy placement
+TODO Level creator saving
 TODO Better NES-style sprite artwork.
 TODO Animation for an end of life
 TODO An authentic HUD with score and time.

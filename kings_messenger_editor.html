@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>King's Messenger Level Editor</title>
+
+<style>
+
+body{
+    margin:0;
+    background:#202020;
+    color:white;
+    font-family:Arial,Helvetica,sans-serif;
+    overflow:hidden;
+}
+
+#toolbar{
+    height:120px;
+    background:#303030;
+    border-bottom:2px solid #606060;
+    padding:8px;
+    box-sizing:border-box;
+}
+
+#toolbar button{
+
+    width:90px;
+    height:28px;
+    margin-right:4px;
+    margin-bottom:4px;
+}
+
+#toolbar input{
+
+    width:60px;
+
+}
+
+#palette{
+
+    margin-top:8px;
+
+}
+
+.tileButton{
+
+    width:90px;
+    height:28px;
+
+}
+
+#status{
+
+    height:24px;
+    background:#101010;
+    padding-left:8px;
+    line-height:24px;
+    font-size:14px;
+
+}
+
+#canvasContainer{
+
+    display:flex;
+    justify-content:center;
+    margin-top:8px;
+
+}
+
+canvas{
+
+    width:512px;
+    height:480px;
+
+    border:2px solid black;
+
+    image-rendering:pixelated;
+    image-rendering:crisp-edges;
+
+}
+
+.selected{
+
+    border:3px solid yellow;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div id="toolbar">
+
+Width
+<input id="levelWidth" type="number" value="48" min="8" max="256">
+
+Height
+<input id="levelHeight" type="number" value="32" min="8" max="256">
+
+<button id="newButton">New Level</button>
+<button id="clearButton">Clear Level</button>
+
+<div id="palette">
+
+<b>Terrain:</b>
+
+<button class="tileButton" data-tile="0">Grass</button>
+<button class="tileButton" data-tile="1">Road</button>
+<button class="tileButton" data-tile="2">Tree</button>
+<button class="tileButton" data-tile="3">Water</button>
+<button class="tileButton" data-tile="4">Bridge</button>
+<button class="tileButton" data-tile="5">Castle</button>
+<button class="tileButton" data-tile="6">Village</button>
+
+</div>
+
+</div>
+
+<div id="canvasContainer">
+
+<canvas
+    id="gameCanvas"
+    width="256"
+    height="240">
+</canvas>
+
+</div>
+
+<div id="status">
+
+Ready.
+
+</div>
+
+<script>
+
+"use strict";
+
+const SCREEN_WIDTH = 256;
+const SCREEN_HEIGHT = 240;
+const TILE_SIZE = 16;
+
+const TILE={
+
+    GRASS:0,
+    ROAD:1,
+    TREE:2,
+    WATER:3,
+    BRIDGE:4,
+    CASTLE:5,
+    VILLAGE:6
+
+};
+
+const ENEMY={
+
+    WOLF:0,
+    BANDIT:1
+
+};
+
+const canvas=document.getElementById("gameCanvas");
+const ctx=canvas.getContext("2d");
+
+ctx.imageSmoothingEnabled=false;
+
+let currentTile=TILE.GRASS;
+
+let cameraX=0;
+let cameraY=0;
+
+let mouseDown=false;
+
+let level={
+
+    width:48,
+
+    height:32,
+
+    playerStart:{
+        x:0,
+        y:0
+    },
+
+    tiles:[],
+
+    enemies:[]
+
+};
+
+function createNewLevel(width,height){
+
+    level.width=width;
+    level.height=height;
+
+    level.playerStart.x=0;
+    level.playerStart.y=0;
+
+    level.enemies=[];
+
+    level.tiles=[];
+
+    for(let i=0;i<width*height;i++){
+
+        level.tiles.push(TILE.GRASS);
+
+    }
+
+}
+
+createNewLevel(48,32);
+
+function getTile(x,y){
+
+    if(x<0)return TILE.GRASS;
+    if(y<0)return TILE.GRASS;
+    if(x>=level.width)return TILE.GRASS;
+    if(y>=level.height)return TILE.GRASS;
+
+    return level.tiles[y*level.width+x];
+
+}
+
+function setTile(x,y,value){
+
+    if(x<0)return;
+    if(y<0)return;
+    if(x>=level.width)return;
+    if(y>=level.height)return;
+
+    level.tiles[y*level.width+x]=value;
+
+}
+
+function clearLevel(){
+
+    for(let i=0;i<level.tiles.length;i++){
+
+        level.tiles[i]=TILE.GRASS;
+
+    }
+
+    level.enemies=[];
+
+    level.playerStart.x=0;
+    level.playerStart.y=0;
+
+}
+
+document.getElementById("newButton").onclick=function(){
+
+    const w=parseInt(
+        document.getElementById("levelWidth").value
+    );
+
+    const h=parseInt(
+        document.getElementById("levelHeight").value
+    );
+
+    createNewLevel(w,h);
+
+};
+
+document.getElementById("clearButton").onclick=function(){
+
+    clearLevel();
+
+};
+
+document.querySelectorAll(".tileButton").forEach(button=>{
+
+    button.onclick=function(){
+
+        document.querySelectorAll(".tileButton").forEach(b=>{
+
+            b.classList.remove("selected");
+
+        });
+
+        button.classList.add("selected");
+
+        currentTile=parseInt(button.dataset.tile);
+
+    };
+
+});
+
+document.querySelector(".tileButton").classList.add("selected");
+
+function drawGrass(x,y){
+
+    ctx.fillStyle="#3CB043";
+    ctx.fillRect(x,y,TILE_SIZE,TILE_SIZE);
+
+}
+
+function drawRoad(x,y){
+
+    ctx.fillStyle="#B09060";
+    ctx.fillRect(x,y,TILE_SIZE,TILE_SIZE);
+
+    ctx.fillStyle="#C8A878";
+
+    ctx.fillRect(x+2,y+4,12,1);
+    ctx.fillRect(x+2,y+8,12,1);
+    ctx.fillRect(x+2,y+12,12,1);
+
+}
+
+function drawTree(x,y){
+
+    ctx.fillStyle="#3CB043";
+    ctx.fillRect(x,y,TILE_SIZE,TILE_SIZE);
+
+    ctx.fillStyle="#6B3E1F";
+    ctx.fillRect(x+6,y+9,4,7);
+
+    ctx.fillStyle="#0B7A20";
+    ctx.fillRect(x+2,y+1,12,10);
+
+}
+
+function drawWater(x,y){
+
+    ctx.fillStyle="#2080FF";
+    ctx.fillRect(x,y,TILE_SIZE,TILE_SIZE);
+
+    ctx.fillStyle="#40A0FF";
+
+    ctx.fillRect(x+2,y+4,12,1);
+    ctx.fillRect(x+1,y+8,10,1);
+    ctx.fillRect(x+4,y+12,8,1);
+
+}
+
+function drawBridge(x,y){
+
+    ctx.fillStyle="#8B5A2B";
+    ctx.fillRect(x,y,TILE_SIZE,TILE_SIZE);
+
+    ctx.fillStyle="#5A3515";
+
+    ctx.fillRect(x,y,TILE_SIZE,2);
+    ctx.fillRect(x,y+14,TILE_SIZE,2);
+
+    ctx.fillStyle="#C09050";
+
+    ctx.fillRect(x+2,y+4,12,1);
+    ctx.fillRect(x+2,y+8,12,1);
+    ctx.fillRect(x+2,y+12,12,1);
+
+}
+
+function drawCastle(x,y){
+
+    ctx.fillStyle="#909090";
+    ctx.fillRect(x+2,y+4,12,12);
+
+    ctx.fillStyle="#707070";
+    ctx.fillRect(x,y+8,4,8);
+    ctx.fillRect(x+12,y+8,4,8);
+
+    ctx.fillStyle="#404040";
+    ctx.fillRect(x+6,y+10,4,6);
+
+}
+
+function drawVillage(x,y){
+
+    ctx.fillStyle="#8B5A2B";
+    ctx.fillRect(x+4,y+8,8,8);
+
+    ctx.fillStyle="#AA2020";
+
+    ctx.beginPath();
+    ctx.moveTo(x+2,y+8);
+    ctx.lineTo(x+8,y+2);
+    ctx.lineTo(x+14,y+8);
+    ctx.fill();
+
+}
+
+function drawTile(tile,x,y){
+
+    switch(tile){
+
+        case TILE.GRASS:
+
+            drawGrass(x,y);
+            break;
+
+        case TILE.ROAD:
+
+            drawRoad(x,y);
+            break;
+
+        case TILE.TREE:
+
+            drawTree(x,y);
+            break;
+
+        case TILE.WATER:
+
+            drawWater(x,y);
+            break;
+
+        case TILE.BRIDGE:
+
+            drawBridge(x,y);
+            break;
+
+        case TILE.CASTLE:
+
+            drawCastle(x,y);
+            break;
+
+        case TILE.VILLAGE:
+
+            drawVillage(x,y);
+            break;
+
+        default:
+
+            drawGrass(x,y);
+
+    }
+
+}
+
+function drawMap(){
+
+    ctx.fillStyle="#3CB043";
+    ctx.fillRect(0,0,SCREEN_WIDTH,SCREEN_HEIGHT);
+
+    const firstColumn=Math.floor(cameraX/TILE_SIZE);
+    const firstRow=Math.floor(cameraY/TILE_SIZE);
+
+    const offsetX=-(cameraX%TILE_SIZE);
+    const offsetY=-(cameraY%TILE_SIZE);
+
+    const columns=Math.ceil(SCREEN_WIDTH/TILE_SIZE)+1;
+    const rows=Math.ceil(SCREEN_HEIGHT/TILE_SIZE)+1;
+
+    for(let row=0;row<rows;row++){
+
+        for(let col=0;col<columns;col++){
+
+            const mapX=firstColumn+col;
+            const mapY=firstRow+row;
+
+            const drawX = offsetX + col*TILE_SIZE;
+            const drawY = offsetY + row*TILE_SIZE;
+
+            const tile=getTile(mapX,mapY);
+
+            drawTile(tile,drawX,drawY);
+
+            ctx.strokeStyle="#303030";
+            ctx.strokeRect(drawX,drawY,TILE_SIZE,TILE_SIZE);
+        }
+
+    }
+
+}
+
+function render(){
+
+    drawMap();
+
+    document.getElementById("status").innerHTML=
+        "Level: "+
+        level.width+
+        " x "+
+        level.height+
+        " Tiles&nbsp;&nbsp;&nbsp;Current Tile: "+
+        currentTile;
+
+    requestAnimationFrame(render);
+
+}
+
+render();
+
+function screenToTile(event){
+
+    const rect = canvas.getBoundingClientRect();
+
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+
+    const pixelX = (event.clientX - rect.left) * scaleX;
+    const pixelY = (event.clientY - rect.top) * scaleY;
+
+    return {
+
+        x: Math.floor(pixelX / TILE_SIZE) + Math.floor(cameraX / TILE_SIZE),
+
+        y: Math.floor(pixelY / TILE_SIZE) + Math.floor(cameraY / TILE_SIZE)
+
+    };
+
+}
+
+function removeTile(tileType){
+
+    for(let y=0;y<level.height;y++){
+
+        for(let x=0;x<level.width;x++){
+
+            if(getTile(x,y)==tileType){
+
+                setTile(x,y,TILE.GRASS);
+
+            }
+
+        }
+
+    }
+
+}
+
+function paintTile(tileX,tileY){
+
+    if(tileX<0)return;
+    if(tileY<0)return;
+    if(tileX>=level.width)return;
+    if(tileY>=level.height)return;
+
+    if(currentTile==TILE.CASTLE){
+
+        removeTile(TILE.CASTLE);
+
+    }
+
+    if(currentTile==TILE.VILLAGE){
+
+        removeTile(TILE.VILLAGE);
+
+    }
+
+    setTile(tileX,tileY,currentTile);
+
+}
+
+canvas.addEventListener("mousedown",function(event){
+
+    mouseDown=true;
+
+    const p=screenToTile(event);
+
+    paintTile(p.x,p.y);
+
+});
+
+canvas.addEventListener("mousemove",function(event){
+
+    if(!mouseDown)return;
+
+    const p=screenToTile(event);
+
+    paintTile(p.x,p.y);
+
+});
+
+window.addEventListener("mouseup",function(){
+
+    mouseDown=false;
+
+});
+
+canvas.addEventListener("mouseleave",function(){
+
+    mouseDown=false;
+
+});
+
+canvas.addEventListener("contextmenu",function(event){
+
+    event.preventDefault();
+
+});
+
+</script>
+</body>
+</html>
