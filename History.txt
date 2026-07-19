@@ -91,9 +91,26 @@ There are several TODOs: scrolling, placing enemies, saving. But this is a nice
 substantial start.
 
 
-TODO Level creator scrolling
+Version 01.10	43 minutes dev	1 minute CPU	2 minutes test		5 hours 36
+
+Continued work on the level editor. Next is scrolling - a level cannot fit on the
+screen. Scrolling was implemented to allow full editing of a level. That was quick
+and easy. Next was to save the file being worked on. This did not go as quickly.
+There were a couple defects in the code that ChatGPT implemented. Fortunately, this
+was relatively quick to resolve. Next was loading a file that was created with the
+app. That was easy. Error checking was added for loading files.
+
+
+
+TODO Add exception handling for Load, as indicated by ChatGPT. Search for:
+	I think we should wrap the parsing code
+TODO Game loads and uses a saved level as how levels are defined
 TODO Level creator enemy placement
-TODO Level creator saving
+TODO not everything looks the same in game and editor. I like most things in 
+	editor better
+TODO I think levels should start at Village and go to Castle. Current is opposite.
+TODO The spacing for the Player Start in the Editor button isn't quite right.
+	Margin needs to be lowered.
 TODO Better NES-style sprite artwork.
 TODO Animation for an end of life
 TODO An authentic HUD with score and time.
