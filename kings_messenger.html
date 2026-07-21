@@ -75,11 +75,11 @@ const TILE_COLLISION = {
 
 };
 
-const MAP_WIDTH=40;
-const MAP_HEIGHT=30;
+let MAP_WIDTH=40;
+let MAP_HEIGHT=30;
 
-const PLAYER_START_X = 40;
-const PLAYER_START_Y = 15 * TILE_SIZE;
+let PLAYER_START_X = 40;
+let PLAYER_START_Y = 15 * TILE_SIZE;
 
 const WOLF_SPEED = 2;
 
@@ -131,59 +131,49 @@ document.addEventListener("keyup",(e)=>{
 
 const map=[];
 
-for(let y=0;y<MAP_HEIGHT;y++){
+async function loadLevel(){
 
-    let row=[];
+    try{
 
-    for(let x=0;x<MAP_WIDTH;x++){
+        const response =
+            await fetch("Level1.json");
 
-        row.push(0);
+        if(!response.ok){
 
-    }
-
-    map.push(row);
-
-}
-
-//
-// Build a simple route
-//
-
-for(let x=2;x<38;x++){
-
-    map[15][x]=TILE.ROAD;
-
-}
-
-map[15][2]=TILE.CASTLE;
-map[15][37]=TILE.VILLAGE;
-
-// Demonstration river
-
-for(let y=4; y<24; y++){
-
-    map[y][20] = TILE.WATER;
-    map[y][21] = TILE.WATER;
-}
-
-// Demonstration bridge 
-
-map[15][20] = TILE.BRIDGE;
-map[15][21] = TILE.BRIDGE;
-
-//
-// Forest
-//
-
-for(let y=8;y<23;y++){
-
-    for(let x=10;x<18;x++){
-
-        if(Math.random()<0.35){
-
-            map[y][x]=TILE.TREE;
+            throw new Error();
 
         }
+
+        const level =
+            await response.json();
+
+        MAP_WIDTH = level.width;
+        MAP_HEIGHT = level.height;
+
+        PLAYER_START_X =
+            level.playerStart.x * TILE_SIZE;
+
+        PLAYER_START_Y =
+            level.playerStart.y * TILE_SIZE;
+
+        map.length = 0;
+
+        for(let y=0;y<MAP_HEIGHT;y++){
+
+            map.push(
+                level.tiles[y].slice()
+            );
+
+        }
+
+    }
+    catch(error){
+
+        alert(
+            "Unable to load Level1.json"
+        );
+
+        throw error;
 
     }
 
@@ -992,7 +982,16 @@ function loop(){
 
 }
 
-loop();
+(async function(){
+
+    await loadLevel();
+
+    loop();
+
+    requestAnimationFrame(gameLoop);
+
+})();
+
 
 </script>
 

@@ -101,9 +101,18 @@ was relatively quick to resolve. Next was loading a file that was created with t
 app. That was easy. Error checking was added for loading files.
 
 
+Version 01.11	31 minutes dev	0 minutes CPU	3 minutes test		6 hours 10
 
-TODO Add exception handling for Load, as indicated by ChatGPT. Search for:
-	I think we should wrap the parsing code
+Now, finally taking steps to connect the two, the design of the King's Messenger
+level will come from Level1.JSON. Defects were generated - I had to get ChatGPT
+back on track. After that, this JSON reading did not work. The Chrome browser
+does generally avoids allowing the reading of files when running on the local file
+system, as opposed to a web server. That configuration step is easy: use Python to
+run a web server is that local folder. 
+That said, there were some minor issue with the code. That will be next.
+
+
+
 TODO Game loads and uses a saved level as how levels are defined
 TODO Level creator enemy placement
 TODO not everything looks the same in game and editor. I like most things in 
