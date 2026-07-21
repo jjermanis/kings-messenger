@@ -112,14 +112,35 @@ run a web server is that local folder.
 That said, there were some minor issue with the code. That will be next.
 
 
+Version 01.12	17 minutes dev	0 minutes CPU	3 minutes test		6 hours 30
 
-TODO Game loads and uses a saved level as how levels are defined
+Now that the level loading via JSON was implementing, now time to address defects
+with the game play.
+The Editor allows you specify where in the level you start. The Game would ignore
+that... more the first life. If you died, you came back at the right start.
+ChatGPT addressed that easily.
+For next, the game is supposed to be won when you reach the location of the castle.
+The game wasn't doing that: you had to get to the hard-coded location. This was 
+also a quick fix.
+Finally, changes to the JSON file were having no effect. Even with massive changes,
+they would be ignored. The browser was caching the level. A change was made to the
+JSON so it would be read every time. Might turn the caching on later, but not now.
+
+
+Version 01.14
+
+Allowing enemies to be placed in the Editor.
+
+
+TODO When the screen scrolls, it seems that if the grid don't exactly lineup
+	with the screen, clicking gets a bit off.
 TODO Level creator enemy placement
 TODO not everything looks the same in game and editor. I like most things in 
 	editor better
-TODO I think levels should start at Village and go to Castle. Current is opposite.
 TODO The spacing for the Player Start in the Editor button isn't quite right.
 	Margin needs to be lowered.
+TODO You can hind behind the top-level bar (with lives and timer). The top
+	row should be the top row.
 TODO Better NES-style sprite artwork.
 TODO Animation for an end of life
 TODO An authentic HUD with score and time.

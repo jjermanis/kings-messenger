@@ -136,7 +136,11 @@ async function loadLevel(){
     try{
 
         const response =
-            await fetch("Level1.json");
+            await fetch("Level1.json",
+            {
+                cache: "no-store"
+            }
+        );
 
         if(!response.ok){
 
@@ -714,6 +718,23 @@ function resetPositions(){
     lastTimerTick = performance.now();
 }
 
+function playerOnTile(tileType){
+
+    const tileX = Math.floor((player.x + 8) / TILE_SIZE);
+    const tileY = Math.floor((player.y + 8) / TILE_SIZE);
+
+    if(
+        tileX < 0 ||
+        tileX >= MAP_WIDTH ||
+        tileY < 0 ||
+        tileY >= MAP_HEIGHT
+    ){
+        return false;
+    }
+
+    return map[tileY][tileX] === tileType;
+}
+
 function update(){
 
     if(gameState!==State.PLAY) return;
@@ -802,10 +823,14 @@ if(playerHitsBandit()){
     camera.renderX = Math.floor(camera.x);
     camera.renderY = Math.floor(camera.y);
 
-    if(player.x>37*TILE_SIZE){
+    const playerCenterX = player.x + 8;
+    const playerCenterY = player.y + 8;
 
-        gameState=State.WIN;
+    const tileX = Math.floor(playerCenterX / TILE_SIZE);
+    const tileY = Math.floor(playerCenterY / TILE_SIZE);
 
+    if(playerOnTile(TILE.CASTLE)){
+        gameState = State.WIN;
     }
 
 }
@@ -986,9 +1011,9 @@ function loop(){
 
     await loadLevel();
 
-    loop();
+    resetPositions();
 
-    requestAnimationFrame(gameLoop);
+    loop();
 
 })();
 
