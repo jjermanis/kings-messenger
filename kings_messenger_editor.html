@@ -15,7 +15,7 @@ body{
 }
 
 #toolbar{
-    height:120px;
+    height:140px;
     background:#303030;
     border-bottom:2px solid #606060;
     padding:8px;
@@ -879,9 +879,9 @@ function screenToTile(event){
 
     return {
 
-        x: Math.floor(pixelX / TILE_SIZE) + Math.floor(cameraX / TILE_SIZE),
+        x: Math.floor((pixelX + cameraX) / TILE_SIZE),
 
-        y: Math.floor(pixelY / TILE_SIZE) + Math.floor(cameraY / TILE_SIZE)
+        y: Math.floor((pixelY + cameraY) / TILE_SIZE)
 
     };
 

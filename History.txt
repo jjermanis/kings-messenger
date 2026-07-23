@@ -139,15 +139,24 @@ For me, this is the first build that fields like a game and not a demo. Not
 complete, but it goes feel like a game now.
  
 
+Version 01.15	21 minutes dev	1 minutes CPU	3 minute test		7 hours 40
 
-TODO When the Editor screen scrolls, it seems that if the grid don't exactly lineup
-	with the screen, clicking gets a bit off.
+So much of this project so far has been focused on building out features and the 
+framework. Now, a little time will be taken to resolve some defects. In the Editor,
+the margin at the top wasn't quite large enough - the buttons on the bottom row
+overlaps. It was a one-line change to fix.
+The next error was also in Editor. After scrolling, clicking on tiles to sort them
+can be a bit off. Clicking can set the tile directly left or above where you clicked.
+I thought this was due to partial tiles at the edges after scrolling. It was. The
+first attempt to fix by ChatGPT worked.
+The final fix for this version is for the Game. The player could go to the very top,
+including hiding behind the title bar. Another easy fix: just prevent the player
+from moving that high.
+
+
+
 TODO not everything looks the same in game and editor. I like most things in 
 	editor better
-TODO The spacing for the Player Start in the Editor button isn't quite right.
-	Margin needs to be lowered.
-TODO You can hide behind the top-level bar (with lives and timer). The top
-	row should be the top row.
 TODO Better NES-style sprite artwork.
 TODO Animation for an end of life
 TODO Handle multiple levels
