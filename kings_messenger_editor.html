@@ -123,8 +123,17 @@ Height
 
 <hr>
 <b>Special:</b>
+
 <button class="tileButton" data-tile="100">
 Player Start
+</button>
+
+<button class="tileButton" data-tile="101">
+Wolf
+</button>
+
+<button class="tileButton" data-tile="102">
+Bandit
 </button>
 
 </div>
@@ -446,6 +455,33 @@ function drawPlayerStart(x,y){
 
 }
 
+function drawWolf(x,y){
+
+    ctx.fillStyle="#555555";
+
+    ctx.fillRect(x+3,y+5,10,6);
+
+    ctx.fillRect(x+1,y+7,3,3);
+    ctx.fillRect(x+12,y+7,3,3);
+
+    ctx.fillStyle="#FFFFFF";
+
+    ctx.fillRect(x+9,y+6,2,2);
+
+}
+
+function drawBandit(x,y){
+
+    ctx.fillStyle="#884400";
+
+    ctx.fillRect(x+3,y+2,10,12);
+
+    ctx.fillStyle="#FFFF88";
+
+    ctx.fillRect(x+5,y,6,5);
+
+}
+
 function drawTile(tile,x,y){
 
     switch(tile){
@@ -541,6 +577,36 @@ if(
 ){
 
     drawPlayerStart(screenX,screenY);
+
+}
+
+for(const enemy of level.enemies){
+
+    const screenX =
+        enemy.x*TILE_SIZE-cameraX;
+
+    const screenY =
+        enemy.y*TILE_SIZE-cameraY;
+
+    if(
+        screenX>=-TILE_SIZE &&
+        screenY>=-TILE_SIZE &&
+        screenX<SCREEN_WIDTH &&
+        screenY<SCREEN_HEIGHT
+    ){
+
+        if(enemy.type==ENEMY.WOLF){
+
+            drawWolf(screenX,screenY);
+
+        }
+        else if(enemy.type==ENEMY.BANDIT){
+
+            drawBandit(screenX,screenY);
+
+        }
+
+    }
 
 }
 
@@ -846,14 +912,33 @@ function paintTile(tileX,tileY){
     if(tileX>=level.width)return;
     if(tileY>=level.height)return;
 
-    if(currentTile==100){
+if(currentTile==101){
 
-        level.playerStart.x=tileX;
-        level.playerStart.y=tileY;
+    level.enemies.push({
 
-        return;
+        type:ENEMY.WOLF,
+        x:tileX,
+        y:tileY
 
-    }
+    });
+
+    return;
+
+}
+
+if(currentTile==102){
+
+    level.enemies.push({
+
+        type:ENEMY.BANDIT,
+        x:tileX,
+        y:tileY
+
+    });
+
+    return;
+
+}
 
     if(currentTile==TILE.CASTLE){
 
@@ -890,6 +975,17 @@ if(currentTile==100){
 
 });
 
+function removeEnemy(tileX,tileY){
+
+    level.enemies =
+        level.enemies.filter(
+
+            e => !(e.x==tileX && e.y==tileY)
+
+        );
+
+}
+
 canvas.addEventListener("mousemove",function(event){
 
     if(!mouseDown)return;
@@ -916,7 +1012,13 @@ canvas.addEventListener("contextmenu",function(event){
 
     event.preventDefault();
 
+    const p = screenToTile(event);
+
+    removeEnemy(p.x,p.y);
+
 });
+
+
 
 </script>
 </body>

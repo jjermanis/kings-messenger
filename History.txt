@@ -127,22 +127,31 @@ they would be ignored. The browser was caching the level. A change was made to t
 JSON so it would be read every time. Might turn the caching on later, but not now.
 
 
-Version 01.14
+Version 01.14	38 minutes dev	2 minutes CPU	5 minutes test		7 hours 15
 
-Allowing enemies to be placed in the Editor.
+The Editor allows the land to be designed in the Editor. But not the enemies.
+I asked ChatGPT to implement it. It had quite a few lines of code, but was
+fairly easy, and worked the first time.
+Next was to get the Game to use the enemies from the JSON file. This did not
+go quickly. It was a lot of code, but this had 3 defects to resolve. 
+Fortunately, easy enough for me to identify and resolve.
+For me, this is the first build that fields like a game and not a demo. Not 
+complete, but it goes feel like a game now.
+ 
 
 
-TODO When the screen scrolls, it seems that if the grid don't exactly lineup
+TODO When the Editor screen scrolls, it seems that if the grid don't exactly lineup
 	with the screen, clicking gets a bit off.
-TODO Level creator enemy placement
 TODO not everything looks the same in game and editor. I like most things in 
 	editor better
 TODO The spacing for the Player Start in the Editor button isn't quite right.
 	Margin needs to be lowered.
-TODO You can hind behind the top-level bar (with lives and timer). The top
+TODO You can hide behind the top-level bar (with lives and timer). The top
 	row should be the top row.
 TODO Better NES-style sprite artwork.
 TODO Animation for an end of life
+TODO Handle multiple levels
+TODO Animation for character (2 step)
 TODO An authentic HUD with score and time.
 TODO Cleaner camera behavior.
 TODO Sound - music and sound effects
@@ -151,6 +160,9 @@ TODO browse tab icon
 TODO BanditState.CHASE and BanditState.RETURN are nearly identical. Refactor.
 TODO The game shouldn't be this wide. Fine for initial version to test. But
 	no "going around" all the obstacles.
+TODO Implement Pause
+TODO Implement the Game Over process (Game Over screen, goes to Title)
+TODO Cleanup code (ChatGPT seems some code from pre-JSON)
 Maybe Better handling for character in front of or behind objects. Right now, it
 	looks like the character is in front of everything.
 

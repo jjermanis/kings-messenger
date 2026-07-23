@@ -170,6 +170,38 @@ async function loadLevel(){
 
         }
 
+enemies.length = 0;
+
+for(const e of level.enemies){
+
+    enemies.push({
+
+        type: e.type,
+
+        startX: e.x * TILE_SIZE,
+        startY: e.y * TILE_SIZE,
+
+        x: e.x * TILE_SIZE,
+        y: e.y * TILE_SIZE,
+
+        width: 8,
+        height: 8,
+
+        direction: -1,
+
+        speed:
+            e.type == 0 ?
+                WOLF_SPEED :
+                BANDIT_SPEED,
+
+        patrolAxis: "horizontal",
+
+        state: BanditState.PATROL
+
+    });
+
+}
+
     }
     catch(error){
 
@@ -198,44 +230,8 @@ const player = {
     timeRemaining:200
 };
 
-const wolf = {
+const enemies = [];
 
-    startX: 300,
-    startY: 15 * TILE_SIZE,
-
-    x:300,
-    y:15 * TILE_SIZE,
-
-    width:8,
-    height:8,
-
-    speed:WOLF_SPEED,
-
-    direction:-1
-
-};
-
-const bandit = {
-
-    startX:430,
-    startY:12*TILE_SIZE,
-
-    x:430,
-    y:12*TILE_SIZE,
-
-    width:8,
-    height:8,
-
-   
- speed:BANDIT_SPEED,
-
-    direction:-1,
-
-    patrolAxis:"horizontal",
-
-    state:BanditState.PATROL
-
-};
 function drawGrass(x,y){
 
     ctx.fillStyle="#4CAF50";
@@ -350,10 +346,10 @@ function drawPlayer(){
 
 }
 
-function drawWolf(){
+function drawWolf(enemy){
 
-    const x = Math.floor(wolf.x) - camera.renderX;
-    const y = Math.floor(wolf.y) - camera.renderY;
+    const x = Math.floor(enemy.x) - camera.renderX;
+    const y = Math.floor(enemy.y) - camera.renderY;
 
     ctx.fillStyle="#555555";
 
@@ -368,10 +364,10 @@ function drawWolf(){
 
 }
 
-function drawBandit(){
+function drawBandit(enemy){
 
-    const x = Math.floor(bandit.x)-camera.renderX;
-    const y = Math.floor(bandit.y)-camera.renderY;
+    const x = Math.floor(enemy.x)-camera.renderX;
+    const y = Math.floor(enemy.y)-camera.renderY;
 
     ctx.fillStyle="#884400";
 
@@ -474,16 +470,16 @@ function distanceSquared(x1,y1,x2,y2){
 
 }
 
-function moveBandit(dx, dy){
+function moveBandit(enemy, dx, dy){
 
-    let nextX = bandit.x + dx;
-    let nextY = bandit.y + dy;
+    let nextX = enemy.x + dx;
+    let nextY = enemy.y + dy;
 
     if(collidesWithWorld(nextX, nextY))
         return false;
 
-    bandit.x = nextX;
-    bandit.y = nextY;
+    enemy.x = nextX;
+    enemy.y = nextY;
 
     return true;
 
@@ -491,39 +487,39 @@ function moveBandit(dx, dy){
 
 
 
-function updateWolf(){
+function updateWolf(enemy){
 
-    let nextX = wolf.x + wolf.direction * wolf.speed;
+    let nextX = enemy.x + enemy.direction * enemy.speed;
 
-    if(collidesWithWorld(nextX, wolf.y)){
+    if(collidesWithWorld(nextX, enemy.y)){
 
-        wolf.direction *= -1;
+        enemy.direction *= -1;
 
     }
     else{
 
-        wolf.x = nextX;
+        enemy.x = nextX;
 
     }
 
 }
 
-function updateBandit(){
+function updateBandit(enemy){
 
-    switch(bandit.state){
+    switch(enemy.state){
 
         case BanditState.PATROL:
 
             if(collidesWithWorld(
-                bandit.x + bandit.direction*bandit.speed,
-                bandit.y))
+                enemy.x + enemy.direction*enemy.speed,
+                enemy.y))
             {
-                bandit.direction*=-1;
+                enemy.direction*=-1;
             }
             else{
 
-                bandit.x +=
-                    bandit.direction*bandit.speed;
+                enemy.x +=
+                    enemy.direction*enemy.speed;
 
             }
 
@@ -533,8 +529,8 @@ function updateBandit(){
                     player.x,
                     player.y,
 
-                    bandit.x,
-                    bandit.y
+                    enemy.x,
+                    enemy.y
 
                 )
 
@@ -545,7 +541,7 @@ function updateBandit(){
 
             ){
 
-                bandit.state =
+                enemy.state =
                     BanditState.CHASE;
 
             }
@@ -554,19 +550,19 @@ function updateBandit(){
 
         case BanditState.CHASE: {
 
-    let dx = player.x - bandit.x;
-    let dy = player.y - bandit.y;
+    let dx = player.x - enemy.x;
+    let dy = player.y - enemy.y;
 
-    const moveX = Math.sign(dx) * bandit.speed;
-    const moveY = Math.sign(dy) * bandit.speed;
+    const moveX = Math.sign(dx) * enemy.speed;
+    const moveY = Math.sign(dy) * enemy.speed;
 
     if(Math.abs(dx) >= Math.abs(dy)){
 
         // Horizontal is the preferred direction
 
-        if(!moveBandit(moveX,0)){
+        if(!moveBandit(enemy, moveX,0)){
 
-            moveBandit(0,moveY);
+            moveBandit(enemy, 0,moveY);
 
         }
 
@@ -575,9 +571,9 @@ function updateBandit(){
 
         // Vertical is the preferred direction
 
-        if(!moveBandit(0,moveY)){
+        if(!moveBandit(enemy, 0,moveY)){
 
-            moveBandit(moveX,0);
+            moveBandit(enemy, moveX,0);
 
         }
 
@@ -585,17 +581,17 @@ function updateBandit(){
 
     if(
         distanceSquared(
-            bandit.startX,
-            bandit.startY,
-            bandit.x,
-            bandit.y
+            enemy.startX,
+            enemy.startY,
+            enemy.x,
+            enemy.y
         )
         >
         BANDIT_CHASE_DISTANCE *
         BANDIT_CHASE_DISTANCE
     ){
 
-        bandit.state = BanditState.RETURN;
+        enemy.state = BanditState.RETURN;
 
     }
 
@@ -603,19 +599,19 @@ function updateBandit(){
         }
         case BanditState.RETURN: {
 
-    dx = bandit.startX - bandit.x;
-    dy = bandit.startY - bandit.y;
+    dx = enemy.startX - enemy.x;
+    dy = enemy.startY - enemy.y;
 
-    const returnMoveX = Math.sign(dx) * bandit.speed;
-    const returnMoveY = Math.sign(dy) * bandit.speed;
+    const returnMoveX = Math.sign(dx) * enemy.speed;
+    const returnMoveY = Math.sign(dy) * enemy.speed;
 
     if(Math.abs(dx) >= Math.abs(dy)){
 
         // Horizontal is the preferred direction
 
-        if(!moveBandit(returnMoveX, 0)){
+        if(!moveBandit(enemy, returnMoveX, 0)){
 
-            moveBandit(0, returnMoveY);
+            moveBandit(enemy, 0, returnMoveY);
 
         }
 
@@ -624,9 +620,9 @@ function updateBandit(){
 
         // Vertical is the preferred direction
 
-        if(!moveBandit(0, returnMoveY)){
+        if(!moveBandit(enemy, 0, returnMoveY)){
 
-            moveBandit(returnMoveX, 0);
+            moveBandit(enemy, returnMoveX, 0);
 
         }
 
@@ -634,13 +630,13 @@ function updateBandit(){
 
     // Have we reached home?
 
-    if(Math.abs(dx) < bandit.speed &&
-       Math.abs(dy) < bandit.speed){
+    if(Math.abs(dx) < enemy.speed &&
+       Math.abs(dy) < enemy.speed){
 
-        bandit.x = bandit.startX;
-        bandit.y = bandit.startY;
+        enemy.x = enemy.startX;
+        enemy.y = enemy.startY;
 
-        bandit.state = BanditState.PATROL;
+        enemy.state = BanditState.PATROL;
 
     }
 
@@ -650,7 +646,7 @@ function updateBandit(){
 
 }
 
-function playerHitsWolf(){
+function playerHitsEnemy(enemy){
 
     return rectsOverlap(
 
@@ -659,28 +655,10 @@ function playerHitsWolf(){
         player.width,
         player.height,
 
-        wolf.x + 4,
-        wolf.y + 4,
-        wolf.width,
-        wolf.height
-
-    );
-
-}
-
-function playerHitsBandit(){
-
-    return rectsOverlap(
-
-        player.x+4,
-        player.y+4,
-        player.width,
-        player.height,
-
-        bandit.x+4,
-        bandit.y+4,
-        bandit.width,
-        bandit.height
+        enemy.x + 4,
+        enemy.y + 4,
+        enemy.width,
+        enemy.height
 
     );
 
@@ -706,13 +684,15 @@ function resetPositions(){
     player.x = PLAYER_START_X;
     player.y = PLAYER_START_Y;
 
-    wolf.x = wolf.startX;
-    wolf.y = wolf.startY;
-    wolf.direction = -1;
+for(const enemy of enemies){
 
-    bandit.x = bandit.startX;
-    bandit.y = bandit.startY;
-    bandit.state = BanditState.PATROL;
+    enemy.x = enemy.startX;
+    enemy.y = enemy.startY;
+
+    enemy.direction = -1;
+    enemy.state = BanditState.PATROL;
+
+}
 
     player.timeRemaining = 200;
     lastTimerTick = performance.now();
@@ -799,19 +779,30 @@ if(!collidesWithWorld(player.x, nextY)){
     if(camera.x<0) camera.x=0;
     if(camera.y<0) camera.y=0;
 
-updateWolf();
+for(const enemy of enemies){
 
-updateBandit();
+    if(enemy.type == 0){
 
-if(playerHitsWolf()){
+        updateWolf(enemy);
 
-    loseLife();
+    }
+    else{
+
+        updateBandit(enemy);
+
+    }
 
 }
 
-if(playerHitsBandit()){
+for(const enemy of enemies){
 
-    loseLife();
+    if(playerHitsEnemy(enemy)){
+
+        loseLife();
+        break;
+
+    }
+
 }
 
     const maxCamX=MAP_WIDTH*TILE_SIZE-SCREEN_WIDTH;
@@ -987,9 +978,21 @@ function render(){
 
     drawMap();
 
-    drawWolf();
+for(const enemy of enemies){
 
-    drawBandit();
+    if(enemy.type == 0){
+
+        drawWolf(enemy);
+
+    }
+    else{
+
+        drawBandit(enemy);
+
+    }
+
+}
+
 
     drawPlayer();
 
