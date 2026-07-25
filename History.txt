@@ -139,7 +139,7 @@ For me, this is the first build that fields like a game and not a demo. Not
 complete, but it goes feel like a game now.
  
 
-Version 01.15	21 minutes dev	1 minutes CPU	3 minute test		7 hours 40
+Version 01.15	21 minutes dev	1 minute CPU	3 minutes test		7 hours 40
 
 So much of this project so far has been focused on building out features and the 
 framework. Now, a little time will be taken to resolve some defects. In the Editor,
@@ -154,7 +154,20 @@ including hiding behind the title bar. Another easy fix: just prevent the player
 from moving that high.
 
 
+Version 01.16	31 minutes dev	1 minutes CPU	3 minute test		8 hours 15
 
+ChatGPT recommended doing a code review, cleanup of small issues. I was up for that.
+It made several suggestion that has already been resolved, but a few nice changes
+were in there.
+The other change was to add a pause button. Tapping P would toggle pause in the 
+game. ChatGPT came up with an implementation. It worked well with a quirk. When 
+you paused, it would keep track of the whole number of seconds remaining. Imagine
+that you played 0.5 seconds, then hit paused. Then repeated. The time would
+never go down. Not critical but an easy fix.
+
+
+
+TODO implement GAME_OVER screen
 TODO not everything looks the same in game and editor. I like most things in 
 	editor better
 TODO Better NES-style sprite artwork.
@@ -169,9 +182,8 @@ TODO browse tab icon
 TODO BanditState.CHASE and BanditState.RETURN are nearly identical. Refactor.
 TODO The game shouldn't be this wide. Fine for initial version to test. But
 	no "going around" all the obstacles.
-TODO Implement Pause
 TODO Implement the Game Over process (Game Over screen, goes to Title)
-TODO Cleanup code (ChatGPT seems some code from pre-JSON)
+TODO Graphical Pause button on the screen
 Maybe Better handling for character in front of or behind objects. Right now, it
 	looks like the character is in front of everything.
 

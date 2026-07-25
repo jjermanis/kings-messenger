@@ -78,8 +78,10 @@ const TILE_COLLISION = {
 let MAP_WIDTH=40;
 let MAP_HEIGHT=30;
 
-let PLAYER_START_X = 40;
-let PLAYER_START_Y = 15 * TILE_SIZE;
+const LEVEL_TIME = 200;
+
+let PLAYER_START_X = 0;
+let PLAYER_START_Y = 0;
 
 const WOLF_SPEED = 2;
 
@@ -98,8 +100,16 @@ ctx.imageSmoothingEnabled=false;
 const State={
     TITLE:0,
     PLAY:1,
-    WIN:2,
-    GAME_OVER:3
+    PAUSE:2,
+    WIN:3,
+    GAME_OVER:4
+};
+
+const ENEMY={
+
+    WOLF:0,
+    BANDIT:1
+
 };
 
 const BanditState = {
@@ -112,6 +122,7 @@ const BanditState = {
 
 let gameState=State.TITLE;
 let lastTimerTick = 0;
+let pauseStartTime = 0;
 
 const keys={};
 
@@ -120,9 +131,29 @@ document.addEventListener("keydown",(e)=>{
 
     if(gameState===State.TITLE && e.key==="Enter"){
         gameState=State.PLAY;
-        player.timeRemaining = 200;
+        player.timeRemaining = LEVEL_TIME;
         lastTimerTick = performance.now();
     }
+
+    if(e.key==="p" || e.key==="P"){
+
+        if(gameState===State.PLAY){
+
+            pauseStartTime = performance.now();
+            gameState = State.PAUSE;
+
+        }
+        else if(gameState===State.PAUSE){
+
+            gameState = State.PLAY;
+
+            // Prevent the timer from "catching up"
+            lastTimerTick += performance.now() - pauseStartTime;
+
+        }
+
+    }
+
 });
 
 document.addEventListener("keyup",(e)=>{
@@ -227,7 +258,7 @@ const player = {
 
     remainingLives:2,
 
-    timeRemaining:200
+    timeRemaining:LEVEL_TIME
 };
 
 const enemies = [];
@@ -694,7 +725,7 @@ for(const enemy of enemies){
 
 }
 
-    player.timeRemaining = 200;
+    player.timeRemaining = LEVEL_TIME;
     lastTimerTick = performance.now();
 }
 
@@ -781,7 +812,7 @@ if(!collidesWithWorld(player.x, nextY)){
 
 for(const enemy of enemies){
 
-    if(enemy.type == 0){
+    if(enemy.type == ENEMY.WOLF){
 
         updateWolf(enemy);
 
@@ -980,7 +1011,7 @@ function render(){
 
 for(const enemy of enemies){
 
-    if(enemy.type == 0){
+    if(enemy.type == ENEMY.WOLF){
 
         drawWolf(enemy);
 
@@ -993,6 +1024,24 @@ for(const enemy of enemies){
 
 }
 
+    if(gameState===State.PAUSE){
+
+        ctx.fillStyle="rgba(0,0,0,0.5)";
+        ctx.fillRect(0,0,256,240);
+
+        ctx.fillStyle="white";
+        ctx.font="16px monospace";
+        ctx.textAlign="center";
+
+        ctx.fillText(
+            "PAUSED",
+            128,
+            120
+        );
+
+        ctx.textAlign="left";
+
+    }
 
     drawPlayer();
 
