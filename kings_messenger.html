@@ -75,10 +75,19 @@ const TILE_COLLISION = {
 
 };
 
+const LEVEL_FILES = [
+    "Level1.json",
+    "Level2.json",
+    "Level3.json"
+];
+
+let currentLevel = 0;
+
 let MAP_WIDTH=40;
 let MAP_HEIGHT=30;
 
 const LEVEL_TIME = 200;
+const STARTING_LIVES = 2;
 
 let PLAYER_START_X = 0;
 let PLAYER_START_Y = 0;
@@ -123,6 +132,7 @@ const BanditState = {
 let gameState=State.TITLE;
 let lastTimerTick = 0;
 let pauseStartTime = 0;
+let gameOverStartTime = 0;
 
 const keys={};
 
@@ -130,9 +140,7 @@ document.addEventListener("keydown",(e)=>{
     keys[e.key]=true;
 
     if(gameState===State.TITLE && e.key==="Enter"){
-        gameState=State.PLAY;
-        player.timeRemaining = LEVEL_TIME;
-        lastTimerTick = performance.now();
+        startNewGame();
     }
 
     if(e.key==="p" || e.key==="P"){
@@ -156,18 +164,35 @@ document.addEventListener("keydown",(e)=>{
 
 });
 
+async function startNewGame(){
+
+    currentLevel = 0;
+
+    await loadLevel(LEVEL_FILES[0]);
+
+    resetPositions();
+
+    player.remainingLives = STARTING_LIVES;
+    player.timeRemaining = LEVEL_TIME;
+
+    lastTimerTick = performance.now();
+
+    gameState = State.PLAY;
+
+}
+
 document.addEventListener("keyup",(e)=>{
     keys[e.key]=false;
 });
 
 const map=[];
 
-async function loadLevel(){
+async function loadLevel(levelFile){
 
     try{
 
         const response =
-            await fetch("Level1.json",
+            await fetch(levelFile,
             {
                 cache: "no-store"
             }
@@ -237,7 +262,7 @@ for(const e of level.enemies){
     catch(error){
 
         alert(
-            "Unable to load Level1.json"
+            "Unable to load " + levelFile
         );
 
         throw error;
@@ -256,12 +281,24 @@ const player = {
 
     speed:1,
 
-    remainingLives:2,
+    remainingLives:STARTING_LIVES,
 
     timeRemaining:LEVEL_TIME
 };
 
 const enemies = [];
+
+async function nextLevel(){
+
+    currentLevel++;
+
+    await loadLevel(LEVEL_FILES[currentLevel]);
+
+    resetPositions();
+
+    lastTimerTick = performance.now();
+
+}
 
 function drawGrass(x,y){
 
@@ -701,7 +738,8 @@ function loseLife(){
 
     if(player.remainingLives < 0){
 
-        gameState = State.WIN;   // Temporary until GAME_OVER exists.
+        gameState = State.GAME_OVER;  
+        gameOverStartTime = performance.now();
         return;
 
     }
@@ -746,7 +784,24 @@ function playerOnTile(tileType){
     return map[tileY][tileX] === tileType;
 }
 
-function update(){
+async function update(){
+
+if(gameState === State.GAME_OVER){
+
+    if(performance.now() - gameOverStartTime >= 4000){
+
+        gameState = State.TITLE;
+
+        player.remainingLives = STARTING_LIVES;
+        player.timeRemaining = LEVEL_TIME;
+
+        resetPositions();
+
+    }
+
+    return;
+
+}
 
     if(gameState!==State.PLAY) return;
 
@@ -852,7 +907,18 @@ for(const enemy of enemies){
     const tileY = Math.floor(playerCenterY / TILE_SIZE);
 
     if(playerOnTile(TILE.CASTLE)){
-        gameState = State.WIN;
+
+        if(currentLevel < LEVEL_FILES.length - 1){
+
+            await nextLevel();
+
+        }
+        else{
+
+            gameState = State.WIN;
+
+        }
+
     }
 
 }
@@ -993,6 +1059,22 @@ function render(){
 
     }
 
+    if(gameState === State.GAME_OVER){
+
+        ctx.fillStyle = "black";
+        ctx.fillRect(0,0,SCREEN_WIDTH,SCREEN_HEIGHT);
+
+        ctx.fillStyle = "white";
+        ctx.textAlign="center";
+        ctx.fillText(
+            "GAME OVER",
+            128,
+            120
+        );
+        return;
+
+    }
+
     if(gameState===State.WIN){
 
         ctx.fillStyle="white";
@@ -1049,9 +1131,9 @@ for(const enemy of enemies){
 
 }
 
-function loop(){
+async function loop(){
 
-    update();
+    await update();
 
     render();
 
@@ -1061,7 +1143,7 @@ function loop(){
 
 (async function(){
 
-    await loadLevel();
+    await loadLevel(LEVEL_FILES[currentLevel]);
 
     resetPositions();
 
