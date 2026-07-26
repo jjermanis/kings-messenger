@@ -82,6 +82,7 @@ const LEVEL_FILES = [
 ];
 
 let currentLevel = 0;
+let currentLocation = "";
 
 let MAP_WIDTH=40;
 let MAP_HEIGHT=30;
@@ -108,10 +109,11 @@ ctx.imageSmoothingEnabled=false;
 
 const State={
     TITLE:0,
-    PLAY:1,
-    PAUSE:2,
-    WIN:3,
-    GAME_OVER:4
+    MISSION_INTRO:1,
+    PLAY:2,
+    PAUSE:3,
+    WIN:4,
+    GAME_OVER:5
 };
 
 const ENEMY={
@@ -131,6 +133,7 @@ const BanditState = {
 
 let gameState=State.TITLE;
 let lastTimerTick = 0;
+let missionIntroStartTime = 0;
 let pauseStartTime = 0;
 let gameOverStartTime = 0;
 
@@ -175,9 +178,9 @@ async function startNewGame(){
     player.remainingLives = STARTING_LIVES;
     player.timeRemaining = LEVEL_TIME;
 
-    lastTimerTick = performance.now();
+    missionIntroStartTime  = performance.now();
 
-    gameState = State.PLAY;
+    gameState = State.MISSION_INTRO;
 
 }
 
@@ -209,6 +212,8 @@ async function loadLevel(levelFile){
 
         MAP_WIDTH = level.width;
         MAP_HEIGHT = level.height;
+
+	currentLocation = level.location;
 
         PLAYER_START_X =
             level.playerStart.x * TILE_SIZE;
@@ -296,7 +301,9 @@ async function nextLevel(){
 
     resetPositions();
 
-    lastTimerTick = performance.now();
+    missionIntroStartTime  = performance.now();
+
+    gameState = State.MISSION_INTRO;
 
 }
 
@@ -753,6 +760,21 @@ function resetPositions(){
     player.x = PLAYER_START_X;
     player.y = PLAYER_START_Y;
 
+camera.x = player.x - SCREEN_WIDTH / 2;
+camera.y = player.y - SCREEN_HEIGHT / 2;
+
+if(camera.x < 0) camera.x = 0;
+if(camera.y < 0) camera.y = 0;
+
+const maxCamX = MAP_WIDTH * TILE_SIZE - SCREEN_WIDTH;
+const maxCamY = MAP_HEIGHT * TILE_SIZE - SCREEN_HEIGHT;
+
+if(camera.x > maxCamX) camera.x = maxCamX;
+if(camera.y > maxCamY) camera.y = maxCamY;
+
+camera.renderX = Math.floor(camera.x);
+camera.renderY = Math.floor(camera.y);
+
 for(const enemy of enemies){
 
     enemy.x = enemy.startX;
@@ -796,6 +818,20 @@ if(gameState === State.GAME_OVER){
         player.timeRemaining = LEVEL_TIME;
 
         resetPositions();
+
+    }
+
+    return;
+
+}
+
+if(gameState == State.MISSION_INTRO){
+
+    if(performance.now() - missionIntroStartTime >= 2000){
+
+        lastTimerTick = performance.now();
+
+        gameState = State.PLAY;
 
     }
 
@@ -991,8 +1027,7 @@ function drawHUD(){
 
     ctx.fillText(
         "LIVES " + player.remainingLives +
-        "   TIME " + player.timeRemaining +
-        "   DELIVER TREATY",
+        "   TIME " + player.timeRemaining,
         4,
         11
     );
@@ -1104,6 +1139,22 @@ for(const enemy of enemies){
 
     }
 
+}
+
+if(gameState == State.MISSION_INTRO){
+
+    ctx.fillStyle = "rgba(0,0,0,0.5)";
+    ctx.fillRect(0,0,SCREEN_WIDTH,SCREEN_HEIGHT);
+
+    ctx.fillStyle = "white";
+    ctx.font = "16px monospace";
+    ctx.textAlign = "center";
+
+    ctx.fillText(currentLocation,
+                 SCREEN_WIDTH/2,
+                 SCREEN_HEIGHT/2);
+
+    ctx.textAlign = "left";
 }
 
     if(gameState===State.PAUSE){

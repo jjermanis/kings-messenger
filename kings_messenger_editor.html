@@ -958,20 +958,20 @@ if(currentTile==102){
 
 canvas.addEventListener("mousedown",function(event){
 
-    mouseDown=true;
+    mouseDown = true;
 
-    const p=screenToTile(event);
+    const p = screenToTile(event);
+
+    if(currentTile == 100){
+
+        level.playerStart.x = p.x;
+        level.playerStart.y = p.y;
+
+        return;
+
+    }
 
     paintTile(p.x,p.y);
-
-if(currentTile==100){
-
-    level.playerStart.x=tileX;
-    level.playerStart.y=tileY;
-
-    return;
-
-}
 
 });
 
