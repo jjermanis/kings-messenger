@@ -82,7 +82,7 @@ const LEVEL_FILES = [
 ];
 
 let currentLevel = 0;
-let currentLocation = "";
+let currentLevelName = "";
 
 let MAP_WIDTH=40;
 let MAP_HEIGHT=30;
@@ -213,7 +213,7 @@ async function loadLevel(levelFile){
         MAP_WIDTH = level.width;
         MAP_HEIGHT = level.height;
 
-	currentLocation = level.location;
+	currentLevelName = level.name;
 
         PLAYER_START_X =
             level.playerStart.x * TILE_SIZE;
@@ -1150,7 +1150,7 @@ if(gameState == State.MISSION_INTRO){
     ctx.font = "16px monospace";
     ctx.textAlign = "center";
 
-    ctx.fillText(currentLocation,
+    ctx.fillText(currentLevelName,
                  SCREEN_WIDTH/2,
                  SCREEN_HEIGHT/2);
 

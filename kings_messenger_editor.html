@@ -101,6 +101,10 @@ Height
 
 <button id="newButton">New Level</button>
 <button id="clearButton">Clear Level</button>
+<input
+    id="levelName"
+    type="text"
+    style="width:180px;">
 <button id="saveButton">Save JSON</button>
 <button id="loadButton">Load JSON</button>
 <input
@@ -202,8 +206,9 @@ let levelNumber=1;
 let level={
 
     width:48,
-
     height:32,
+
+    name: "",
 
     playerStart:{
         x:0,
@@ -220,6 +225,9 @@ function createNewLevel(width,height){
 
     level.width=width;
     level.height=height;
+
+    level.name = "";
+    document.getElementById("levelName").value = "";
 
     level.playerStart.x=0;
     level.playerStart.y=0;
@@ -269,6 +277,9 @@ function clearLevel(){
     }
 
     level.enemies=[];
+
+    level.name = "";
+    document.getElementById("levelName").value = "";
 
     level.playerStart.x=0;
     level.playerStart.y=0;
@@ -626,25 +637,25 @@ window.addEventListener("keyup",function(event){
 
 function updateCamera(){
 
-    if(keys["ArrowLeft"] || keys["a"] || keys["A"]){
+    if(keys["ArrowLeft"]){
 
         cameraX-=CAMERA_SPEED;
 
     }
 
-    if(keys["ArrowRight"] || keys["d"] || keys["D"]){
+    if(keys["ArrowRight"]){
 
         cameraX+=CAMERA_SPEED;
 
     }
 
-    if(keys["ArrowUp"] || keys["w"] || keys["W"]){
+    if(keys["ArrowUp"]){
 
         cameraY-=CAMERA_SPEED;
 
     }
 
-    if(keys["ArrowDown"] || keys["s"] || keys["S"]){
+    if(keys["ArrowDown"]){
 
         cameraY+=CAMERA_SPEED;
 
@@ -669,12 +680,18 @@ function updateCamera(){
 
 function saveLevel(){
 
+    level.name =
+        document.getElementById("levelName").value;
+
     let json = "{\n";
 
     json += '    "version": 1,\n';
 
     json += '    "width": ' + level.width + ",\n";
-    json += '    "height": ' + level.height + ",\n\n";
+    json += '    "height": ' + level.height + ",\n";
+    json += '    "name": "' +
+        level.name.replace(/"/g,'\\"') +
+        '",\n\n';
 
     json += '    "playerStart": {\n';
     json += '        "x": ' + level.playerStart.x + ",\n";
@@ -793,6 +810,11 @@ function loadLevel(file){
 
             level.width = data.width;
             level.height = data.height;
+
+            level.name = data.name || "";
+
+            document.getElementById("levelName").value =
+                level.name;
 
             level.playerStart = data.playerStart;
 
