@@ -180,7 +180,7 @@ These would be played in order to go through the levels. This took some time,
 but it got through. When multiple JSONs are specified, they are played in order.
 
 
-Version 01.18	39 minutes dev	1 minute Dev	5 minutes test		9 hours 45
+Version 01.18	39 minutes dev	1 minute CPU	5 minutes test		9 hours 45
 
 Key functionality is in place. Now I want to add some touches. I want to add a 
 location name at the beginning of each level. Each level will start with the 
@@ -194,7 +194,7 @@ Fixed error setting the Player Start in Editor
 After this I started using Editor to design and create Level 1.
 
 
-Version 01.19	21 minutes dev	0 minutes Dev	4 minutes test		10 hours 10
+Version 01.19	21 minutes dev	0 minutes CPU	4 minutes test		10 hours 10
 
 Added storing the level name in the JSON. Store in Editor, use in Game. This
 had a defect, of sorts. Previously, the Editor used WASD as a control to scroll
@@ -203,6 +203,15 @@ level name editing. If a level had one of those characters, it would allow it
 in the name, AND scroll the game. I didn't use WASD to scroll - I removed that.
 I finished production Level 1
 I started production Level 2
+
+
+Version 01.20	12 minutes dev	0 minutes CPU	3 minutes test		10 hours 25
+
+A small hidden defect. In the JSON file, duplicates for enemies could be in the 
+file. This would have no effect, but it would add some complexity and wasted
+computing. This was an easy for ChatGPT.
+I finished production Level 2
+I started production Level 3
 
 
 

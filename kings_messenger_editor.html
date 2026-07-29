@@ -936,6 +936,13 @@ function paintTile(tileX,tileY){
 
 if(currentTile==101){
 
+    level.enemies =
+        level.enemies.filter(
+            e => !(e.type==ENEMY.WOLF &&
+                   e.x==tileX &&
+                   e.y==tileY)
+        );
+
     level.enemies.push({
 
         type:ENEMY.WOLF,
@@ -949,6 +956,13 @@ if(currentTile==101){
 }
 
 if(currentTile==102){
+
+    level.enemies =
+        level.enemies.filter(
+            e => !(e.type==ENEMY.BANDIT &&
+                   e.x==tileX &&
+                   e.y==tileY)
+        );
 
     level.enemies.push({
 
