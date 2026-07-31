@@ -316,37 +316,40 @@ function drawGrass(x,y){
 
 function drawRoad(x,y){
 
-    ctx.fillStyle="#B07D45";
+    ctx.fillStyle="#B09060";
     ctx.fillRect(x,y,TILE_SIZE,TILE_SIZE);
+
+    ctx.fillStyle="#C8A878";
+
+    ctx.fillRect(x+2,y+4,12,1);
+    ctx.fillRect(x+2,y+8,12,1);
+    ctx.fillRect(x+2,y+12,12,1);
 
 }
 
 function drawTree(x,y){
 
-    drawGrass(x,y);
+    ctx.fillStyle="#3CB043";
+    ctx.fillRect(x,y,TILE_SIZE,TILE_SIZE);
 
-    ctx.fillStyle="#0A5A0A";
-    ctx.fillRect(x+4,y+2,8,8);
+    ctx.fillStyle="#6B3E1F";
+    ctx.fillRect(x+6,y+9,4,7);
 
-    ctx.fillStyle="#704020";
-    ctx.fillRect(x+7,y+10,2,5);
+    ctx.fillStyle="#0B7A20";
+    ctx.fillRect(x+2,y+1,12,10);
 
 }
 
-function drawWater(x, y){
+function drawWater(x,y){
 
-    // Dark blue background
+    ctx.fillStyle="#2080FF";
+    ctx.fillRect(x,y,TILE_SIZE,TILE_SIZE);
 
-    ctx.fillStyle = "#2050C0";
-    ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
+    ctx.fillStyle="#40A0FF";
 
-    // Light blue ripples
-
-    ctx.fillStyle = "#70B8FF";
-
-    ctx.fillRect(x+2, y+3, 3, 1);
-    ctx.fillRect(x+8, y+6, 4, 1);
-    ctx.fillRect(x+4, y+11, 5, 1);
+    ctx.fillRect(x+2,y+4,12,1);
+    ctx.fillRect(x+1,y+8,10,1);
+    ctx.fillRect(x+4,y+12,8,1);
 
 }
 
@@ -376,26 +379,35 @@ function drawBridge(x, y){
 
 function drawCastle(x,y){
 
-    ctx.fillStyle="#B0B0B0";
-    ctx.fillRect(x+1,y+2,14,12);
+    ctx.fillStyle = "#3CB043";
+    ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
 
-    ctx.fillStyle="#808080";
+    ctx.fillStyle="#909090";
+    ctx.fillRect(x+2,y+4,12,12);
 
-    ctx.fillRect(x+3,y,2,4);
-    ctx.fillRect(x+11,y,2,4);
+    ctx.fillStyle="#707070";
+    ctx.fillRect(x,y+8,4,8);
+    ctx.fillRect(x+12,y+8,4,8);
+
+    ctx.fillStyle="#404040";
+    ctx.fillRect(x+6,y+10,4,6);
 
 }
 
 function drawVillage(x,y){
 
-    ctx.fillStyle="#DDDD88";
-    ctx.fillRect(x+2,y+5,12,9);
+    ctx.fillStyle = "#3CB043";
+    ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
 
-    ctx.fillStyle="#AA3333";
+    ctx.fillStyle="#8B5A2B";
+    ctx.fillRect(x+4,y+8,8,8);
+
+    ctx.fillStyle="#AA2020";
+
     ctx.beginPath();
-    ctx.moveTo(x+1,y+5);
-    ctx.lineTo(x+8,y);
-    ctx.lineTo(x+15,y+5);
+    ctx.moveTo(x+2,y+8);
+    ctx.lineTo(x+8,y+2);
+    ctx.lineTo(x+14,y+8);
     ctx.fill();
 
 }

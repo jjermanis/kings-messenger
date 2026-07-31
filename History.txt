@@ -214,10 +214,16 @@ I finished production Level 2
 I started production Level 3
 
 
+Version 01.21	13 minutes dev	0 minutes CPU	2 minutes test		10 hours 40
+
+The graphics on the Game and the Editor are similar, but not the same. I like a
+lot of the Editor graphics better. Copied the road, tree, wolf, and bandit 
+graphics from Editor over to Game.
+I continued production Level 3
+
+
 
 TODO build out true levels 1-4
-TODO not everything looks the same in game and editor. I like most things in 
-	editor better
 TODO Needs a victory screen
 TODO Better NES-style sprite artwork.
 TODO Animation for an end of life
