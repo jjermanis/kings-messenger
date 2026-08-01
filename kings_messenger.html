@@ -1162,9 +1162,17 @@ if(gameState == State.MISSION_INTRO){
     ctx.font = "16px monospace";
     ctx.textAlign = "center";
 
-    ctx.fillText(currentLevelName,
-                 SCREEN_WIDTH/2,
-                 SCREEN_HEIGHT/2);
+    ctx.fillText(
+        "LEVEL " + (currentLevel + 1),
+        SCREEN_WIDTH / 2,
+        SCREEN_HEIGHT / 2 - 10
+    );
+
+    ctx.fillText(
+        currentLevelName.toUpperCase(),
+        SCREEN_WIDTH / 2,
+        SCREEN_HEIGHT / 2 + 10
+    );
 
     ctx.textAlign = "left";
 }
