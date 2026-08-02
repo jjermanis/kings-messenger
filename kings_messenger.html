@@ -102,6 +102,47 @@ const PLAYER_RIGHT_STAND = [
 
 ];
 
+const PLAYER_RIGHT_RUN1 = [  
+
+".....GGGGG......",
+"....GGGGGGGG....",
+"....GGGGGGRRR...",
+"...GGGGGRRSSSG..",
+"..GG.GRRSRSKS...",
+"......RRRSSSSS..",
+".....BBBBSSSS...",
+"....BBSSTBSBB...",
+"....BBSBTTBTTT..",
+"....BBSBTTTTTS..",
+"....BBSSRRSRRS..",
+"....BBBBTTTT....",
+"....BBB.TTT.....",
+"....BB.RRTTRR...",
+"......R...RR....",
+".....RRR...RRR.."
+
+];
+
+const PLAYER_RIGHT_RUN2 = [
+
+".....GGGGG......",
+"....GGGGGGGG....",
+"....GGGGGGRRR...",
+"...GGGGGRRSSSG..",
+"..GG.GRRSRSKS...",
+"......RRRSSSSS..",
+".....BBBBSSSS...",
+"....BBBSTBSB....",
+"....BBSBTTBTTT..",
+"....BBSBTTTTTS..",
+"....BBSSRRSRRS..",
+"....BBBBTTTT....",
+".....BBBTTT.....",
+"....BBRRT.RR....",
+".....RR....R....",
+"....RRR....RRR.."
+
+];
 
 const PLAYER_PALETTE = {
 
@@ -117,14 +158,28 @@ const PLAYER_PALETTE = {
 let currentLevel = 0;
 let currentLevelName = "";
 
+let playerFacingRight = true;
+
 let MAP_WIDTH=40;
 let MAP_HEIGHT=30;
 
 const LEVEL_TIME = 200;
 const STARTING_LIVES = 2;
 
-const playerSprite =
-    buildSprite(PLAYER_RIGHT_STAND);
+const PLAYER_RIGHT = [
+
+    buildSprite(PLAYER_RIGHT_STAND),
+    buildSprite(PLAYER_RIGHT_RUN1),
+    buildSprite(PLAYER_RIGHT_STAND),
+    buildSprite(PLAYER_RIGHT_RUN2)
+
+];
+
+const PLAYER_LEFT =
+    PLAYER_RIGHT.map(sprite => mirrorSprite(sprite));
+
+let playerAnimationFrame = 0;
+let lastPlayerAnimationTime = 0;
 
 let PLAYER_START_X = 0;
 let PLAYER_START_Y = 0;
@@ -376,6 +431,26 @@ function buildSprite(sprite){
 
 }
 
+function mirrorSprite(sprite){
+
+    const canvas = document.createElement("canvas");
+
+    canvas.width = 16;
+    canvas.height = 16;
+
+    const c = canvas.getContext("2d");
+
+    c.imageSmoothingEnabled = false;
+
+    c.translate(16, 0);
+    c.scale(-1, 1);
+
+    c.drawImage(sprite, 0, 0);
+
+    return canvas;
+
+}
+
 function drawGrass(x,y){
 
     ctx.fillStyle="#4CAF50";
@@ -489,10 +564,18 @@ function drawPlayer(){
     const py =
         Math.floor(player.y) - camera.renderY;
 
+    const sprites =
+        playerFacingRight ?
+            PLAYER_RIGHT :
+            PLAYER_LEFT;
+
     ctx.drawImage(
-        playerSprite,
+
+        sprites[playerAnimationFrame],
+
         px,
         py
+
     );
 
 }
@@ -836,6 +919,10 @@ function resetPositions(){
     player.x = PLAYER_START_X;
     player.y = PLAYER_START_Y;
 
+    playerFacingRight = true;
+    playerAnimationFrame = 0;
+    lastPlayerAnimationTime = performance.now();
+
 camera.x = player.x - SCREEN_WIDTH / 2;
 camera.y = player.y - SCREEN_HEIGHT / 2;
 
@@ -937,10 +1024,18 @@ if(now - lastTimerTick >= 1000){
 let dx = 0;
 let dy = 0;
 
-if(keys["ArrowLeft"])  dx = -player.speed;
-if(keys["ArrowRight"]) dx =  player.speed;
+if(keys["ArrowLeft"])  {
+    dx = -player.speed;
+    playerFacingRight = false;
+}
+if(keys["ArrowRight"]) {
+    dx =  player.speed;
+    playerFacingRight = true;
+}
 if(keys["ArrowUp"])    dy = -player.speed;
 if(keys["ArrowDown"])  dy =  player.speed;
+
+const playerMoving = (dx != 0 || dy != 0);
 
 // Horizontal movement
 
@@ -1000,6 +1095,26 @@ for(const enemy of enemies){
         break;
 
     }
+
+}
+
+if(playerMoving){
+
+    if(now - lastPlayerAnimationTime >= 120){
+
+        playerAnimationFrame++;
+
+        if(playerAnimationFrame >= PLAYER_RIGHT.length)
+            playerAnimationFrame = 0;
+
+        lastPlayerAnimationTime = now;
+
+    }
+
+}
+else{
+
+    playerAnimationFrame = 0;
 
 }
 

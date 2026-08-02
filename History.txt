@@ -242,9 +242,22 @@ exactly accurate, but close enough to complete.
 Next will be animation and different directions.
 
 
+Version 01.24	42 minutes dev	0 minutes CPU	3 minutes test		12 hours 45
+
+Started with animation. ChatGPT game up with two frames for movement. 
+Next was getting those frame incorporated into animation when moving. 
+Movement was mild, but fine, and I can always change it later. All of
+this work has been with a right-facing player. I wanted to add left-
+facing when the player runs that way. This is a substantial change that
+went smooth.
+
+
 
 IN PROGRESS Better NES-style sprite artwork.
 IN PROGRESS build out true levels 1-4
+TODO Now that the sizes have changed the collision checks need to be redone.
+TODO Make the cape purple, like in the title logo
+TODO troubleshoot the animation on the player running
 TODO Needs a victory screen
 TODO Animation for an end of life
 TODO Animation for character (2 step)
