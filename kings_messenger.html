@@ -81,6 +81,39 @@ const LEVEL_FILES = [
     "Level3.json"
 ];
 
+const PLAYER_RIGHT_STAND = [
+
+".....GGGGG......",
+"....GGGGGGGG....",
+"....GGGGGGRRR...",
+"...GGGGGRRSSSG..",
+"..GG.GRRSRSKS...",
+"......RRRSSSSS..",
+".....BBBBSSSS...",
+"....BBSSTBSB....",
+"....BBSBTTBTTT..",
+"....BBSBTTTTTS..",
+"....BBSSRRSRRS..",
+"....BBBSTTTTTS..",
+"....BBBBTTTTT...",
+"....BB.RRTTRR...",
+"......RR...RR...",
+"......RRR..RRR.."
+
+];
+
+
+const PLAYER_PALETTE = {
+
+    K:"#000000",
+    S:"#F8B800",
+    G:"#00A800",
+    T:"#D8A060",
+    B:"#0058F8",
+    R:"#7C3C00"
+
+};
+
 let currentLevel = 0;
 let currentLevelName = "";
 
@@ -89,6 +122,9 @@ let MAP_HEIGHT=30;
 
 const LEVEL_TIME = 200;
 const STARTING_LIVES = 2;
+
+const playerSprite =
+    buildSprite(PLAYER_RIGHT_STAND);
 
 let PLAYER_START_X = 0;
 let PLAYER_START_Y = 0;
@@ -307,6 +343,39 @@ async function nextLevel(){
 
 }
 
+function buildSprite(sprite){
+
+    const canvas = document.createElement("canvas");
+
+    canvas.width = 16;
+    canvas.height = 16;
+
+    const c = canvas.getContext("2d");
+
+    c.imageSmoothingEnabled = false;
+
+    for(let y=0;y<16;y++){
+
+        const row = sprite[y];
+
+        for(let x=0;x<16;x++){
+
+            const pixel = row[x];
+
+            if(pixel==".")
+                continue;
+
+            c.fillStyle = PLAYER_PALETTE[pixel];
+            c.fillRect(x,y,1,1);
+
+        }
+
+    }
+
+    return canvas;
+
+}
+
 function drawGrass(x,y){
 
     ctx.fillStyle="#4CAF50";
@@ -414,22 +483,17 @@ function drawVillage(x,y){
 
 function drawPlayer(){
 
-    const px = Math.floor(player.x) - camera.renderX;
-    const py = Math.floor(player.y) - camera.renderY;
+    const px =
+        Math.floor(player.x) - camera.renderX;
 
-    ctx.fillStyle="#0000AA";
-    ctx.fillRect(
-        px+4,
-        py+2,
-        8,
-        12);
+    const py =
+        Math.floor(player.y) - camera.renderY;
 
-    ctx.fillStyle="#FFFF66";
-    ctx.fillRect(
-        px+5,
-        py,
-        6,
-        5);
+    ctx.drawImage(
+        playerSprite,
+        px,
+        py
+    );
 
 }
 
