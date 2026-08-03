@@ -252,11 +252,22 @@ facing when the player runs that way. This is a substantial change that
 went smooth.
 
 
+Version 01.02	38 minutes dev	0 minutes CPU	2 minutes test		13 hours 25
+
+Next was UI for the wolf enemies. Started with the images for the two images
+of the wolf running. The first image had multiple flaws; I had ChatGPT try
+again. The second was decent. It was face the wrong way, so had each 
+reversed left-to-right. Then there was animation. There was one bug to
+resolve. It was decently quick to get through.
+I continued production Level 3
+
+
 
 IN PROGRESS Better NES-style sprite artwork.
 IN PROGRESS build out true levels 1-4
 TODO Now that the sizes have changed the collision checks need to be redone.
 TODO Make the cape purple, like in the title logo
+TODO The wolf UI needs changes. Colors too close, shape a little blah
 TODO troubleshoot the animation on the player running
 TODO Needs a victory screen
 TODO Animation for an end of life

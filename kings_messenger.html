@@ -155,6 +155,40 @@ const PLAYER_PALETTE = {
 
 };
 
+const WOLF_RUN1 = [
+
+"................",
+"...........KK...",
+"...KKKKKKKKLLK..",
+"..KDDDDDDDDLLLLK",
+".KKDDDDDDDDDLLK.",
+"...KDDDDDDDDDK..",
+"..KDDD..DD..D...",
+"..DD.KK....KDD.."
+
+];
+
+const WOLF_RUN2 = [
+
+"................",
+"...........KK...",
+"...KKKKKKKKLLK..",
+"..KDDDDDDDDLLLLK",
+".KKDDDDDDDDDLLK.",
+"...KDDDDDDDDDK..",
+"..K.D..DD..DD...",
+"..DD..KK..KK.D.."
+
+];
+
+const WOLF_PALETTE = {
+
+    K:"#101010",
+    D:"#707070",
+    L:"#E0E0E0"
+
+};
+
 let currentLevel = 0;
 let currentLevelName = "";
 
@@ -185,6 +219,19 @@ let PLAYER_START_X = 0;
 let PLAYER_START_Y = 0;
 
 const WOLF_SPEED = 2;
+
+const WOLF_RIGHT = [
+
+    buildSprite(WOLF_RUN1, WOLF_PALETTE),
+    buildSprite(WOLF_RUN2, WOLF_PALETTE)
+
+];
+
+const WOLF_LEFT =
+    WOLF_RIGHT.map(sprite => mirrorSprite(sprite));
+
+let wolfAnimationFrame = 0;
+let lastWolfAnimationTime = 0;
 
 const BANDIT_SPEED = 1;
 const BANDIT_DETECTION_RANGE = 64;
@@ -402,18 +449,18 @@ function buildSprite(sprite){
 
     const canvas = document.createElement("canvas");
 
-    canvas.width = 16;
-    canvas.height = 16;
+    canvas.width = sprite[0].length;
+    canvas.height = sprite.length;
 
     const c = canvas.getContext("2d");
 
     c.imageSmoothingEnabled = false;
 
-    for(let y=0;y<16;y++){
+    for(let y=0;y<sprite.length;y++){
 
         const row = sprite[y];
 
-        for(let x=0;x<16;x++){
+        for(let x=0;x<row.length;x++){
 
             const pixel = row[x];
 
@@ -435,14 +482,14 @@ function mirrorSprite(sprite){
 
     const canvas = document.createElement("canvas");
 
-    canvas.width = 16;
-    canvas.height = 16;
+    canvas.width = sprite.width;
+    canvas.height = sprite.height;
 
     const c = canvas.getContext("2d");
 
     c.imageSmoothingEnabled = false;
 
-    c.translate(16, 0);
+    c.translate(sprite.width, 0);
     c.scale(-1, 1);
 
     c.drawImage(sprite, 0, 0);
@@ -585,16 +632,19 @@ function drawWolf(enemy){
     const x = Math.floor(enemy.x) - camera.renderX;
     const y = Math.floor(enemy.y) - camera.renderY;
 
-    ctx.fillStyle="#555555";
+    const sprites =
+        enemy.direction < 0 ?
+            WOLF_LEFT :
+            WOLF_RIGHT;
 
-    ctx.fillRect(x+3,y+5,10,6);
+    ctx.drawImage(
 
-    ctx.fillRect(x+1,y+7,3,3);
-    ctx.fillRect(x+12,y+7,3,3);
+        sprites[wolfAnimationFrame],
 
-    ctx.fillStyle="#FFFFFF";
+        x,
+        y + 4
 
-    ctx.fillRect(x+9,y+6,2,2);
+    );
 
 }
 
@@ -923,6 +973,9 @@ function resetPositions(){
     playerAnimationFrame = 0;
     lastPlayerAnimationTime = performance.now();
 
+    wolfAnimationFrame = 0;
+    lastWolfAnimationTime = performance.now();
+
 camera.x = player.x - SCREEN_WIDTH / 2;
 camera.y = player.y - SCREEN_HEIGHT / 2;
 
@@ -1018,6 +1071,17 @@ if(now - lastTimerTick >= 1000){
         return;
 
     }
+
+}
+
+if(now - lastWolfAnimationTime >= 120){
+
+    wolfAnimationFrame++;
+
+    if(wolfAnimationFrame >= WOLF_RIGHT.length)
+        wolfAnimationFrame = 0;
+
+    lastWolfAnimationTime = now;
 
 }
 
