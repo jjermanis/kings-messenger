@@ -189,6 +189,59 @@ const WOLF_PALETTE = {
 
 };
 
+const BANDIT_RUN1 = [
+
+"......HHHH......",
+"....HHHHHHHH....",
+"...HHEEHHEEHH...",
+"...HHEEHHEEHH...",
+"...HHHHHHHHHH...",
+"...HHHHHHHHHH...",
+".TTTHTTHTTHTTTT.",
+".TTTTTTTTTTTTTT.",
+".TT.TTTTTTTT.TT.",
+".TT.TTTTTTTT.TT.",
+"..TTTTTTTTTT.TT.",
+"...TTPPPPPPP.TT.",
+"....PPP..PPP....",
+"....PPP...BBB...",
+"....BBB.........",
+"....BBB........."
+
+];
+
+const BANDIT_RUN2 = [
+
+"......HHHH......",
+"....HHHHHHHH....",
+"...HHEEHHEEHH...",
+"...HHEEHHEEHH...",
+"...HHHHHHHHHH...",
+"...HHHHHHHHHH...",
+".TTTHTTHTTHTTTT.",
+".TTTTTTTTTTTTTT.",
+".TT.TTTTTTTT.TT.",
+".TT.TTTTTTTT.TT.",
+".TT.TTTTTTTTTT..",
+".TT.PPPPPPPTT...",
+"....PPP..PPP....",
+"...BBB...PPP....",
+".........BBB....",
+".........BBB...."
+
+];
+
+const BANDIT_PALETTE = {
+
+    '.': null,
+    E:"#000000",   // Black
+    H:"#989698",   // Hood
+    T:"#287200",   // Tunic
+    P:"#783C00",   // Pants
+    B:"#3C1800"    // Boots
+
+};
+
 let currentLevel = 0;
 let currentLevelName = "";
 
@@ -202,10 +255,10 @@ const STARTING_LIVES = 2;
 
 const PLAYER_RIGHT = [
 
-    buildSprite(PLAYER_RIGHT_STAND),
-    buildSprite(PLAYER_RIGHT_RUN1),
-    buildSprite(PLAYER_RIGHT_STAND),
-    buildSprite(PLAYER_RIGHT_RUN2)
+    buildSprite(PLAYER_RIGHT_STAND, PLAYER_PALETTE),
+    buildSprite(PLAYER_RIGHT_RUN1, PLAYER_PALETTE),
+    buildSprite(PLAYER_RIGHT_STAND, PLAYER_PALETTE),
+    buildSprite(PLAYER_RIGHT_RUN2, PLAYER_PALETTE)
 
 ];
 
@@ -232,6 +285,16 @@ const WOLF_LEFT =
 
 let wolfAnimationFrame = 0;
 let lastWolfAnimationTime = 0;
+
+const BANDIT = [
+
+    buildSprite(BANDIT_RUN1, BANDIT_PALETTE),
+    buildSprite(BANDIT_RUN2, BANDIT_PALETTE)
+
+];
+
+let banditAnimationFrame = 0;
+let lastBanditAnimationTime = 0;
 
 const BANDIT_SPEED = 1;
 const BANDIT_DETECTION_RANGE = 64;
@@ -445,7 +508,7 @@ async function nextLevel(){
 
 }
 
-function buildSprite(sprite){
+function buildSprite(sprite, palette){
 
     const canvas = document.createElement("canvas");
 
@@ -467,7 +530,7 @@ function buildSprite(sprite){
             if(pixel==".")
                 continue;
 
-            c.fillStyle = PLAYER_PALETTE[pixel];
+            c.fillStyle = palette[pixel];
             c.fillRect(x,y,1,1);
 
         }
@@ -650,16 +713,17 @@ function drawWolf(enemy){
 
 function drawBandit(enemy){
 
-    const x = Math.floor(enemy.x)-camera.renderX;
-    const y = Math.floor(enemy.y)-camera.renderY;
+    const x = Math.floor(enemy.x) - camera.renderX;
+    const y = Math.floor(enemy.y) - camera.renderY;
 
-    ctx.fillStyle="#884400";
+    ctx.drawImage(
 
-    ctx.fillRect(x+3,y+2,10,12);
+        BANDIT[banditAnimationFrame],
 
-    ctx.fillStyle="#FFFF88";
+        x,
+        y
 
-    ctx.fillRect(x+5,y,6,5);
+    );
 
 }
 
@@ -976,6 +1040,9 @@ function resetPositions(){
     wolfAnimationFrame = 0;
     lastWolfAnimationTime = performance.now();
 
+    banditAnimationFrame = 0;
+    lastBanditAnimationTime = performance.now();
+
 camera.x = player.x - SCREEN_WIDTH / 2;
 camera.y = player.y - SCREEN_HEIGHT / 2;
 
@@ -1082,6 +1149,17 @@ if(now - lastWolfAnimationTime >= 120){
         wolfAnimationFrame = 0;
 
     lastWolfAnimationTime = now;
+
+}
+
+if(now - lastBanditAnimationTime >= 150){
+
+    banditAnimationFrame++;
+
+    if(banditAnimationFrame >= BANDIT.length)
+        banditAnimationFrame = 0;
+
+    lastBanditAnimationTime = now;
 
 }
 

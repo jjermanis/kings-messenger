@@ -252,7 +252,7 @@ facing when the player runs that way. This is a substantial change that
 went smooth.
 
 
-Version 01.02	38 minutes dev	0 minutes CPU	2 minutes test		13 hours 25
+Version 01.25	38 minutes dev	0 minutes CPU	2 minutes test		13 hours 25
 
 Next was UI for the wolf enemies. Started with the images for the two images
 of the wolf running. The first image had multiple flaws; I had ChatGPT try
@@ -262,24 +262,36 @@ resolve. It was decently quick to get through.
 I continued production Level 3
 
 
+Version 01.26	40 minutes dev	1 minute CPU	4 minutes test		14 hours 10
 
-IN PROGRESS Better NES-style sprite artwork.
+After the wolf was the other enemy: the bandit. I did this differently.
+Instead of facing left and right, I always had the bandit face forward.
+Two reasons. One, I liked the look of the bandit facing forward - more
+scary. Two, I wasn't sure of an effective way to get bandit facing forward.
+I worked with ChatGPT on this. Two defects. One, I didn't like the design
+of the character. I figured I'd create it myself. Two, the colors were
+really messed up. Found the defect: all characters were using the players
+color scheme. Both wolves and bandits looked better after fixing that.
+I finished production Level 3
+
+
+
+
 IN PROGRESS build out true levels 1-4
 TODO Now that the sizes have changed the collision checks need to be redone.
 TODO Make the cape purple, like in the title logo
-TODO The wolf UI needs changes. Colors too close, shape a little blah
+TODO The wolf UI needs changes. Shape a little blah. Maybe larger head?
+TODO The bandit UI needs changes. Better arm/shoulders, bigger head,
+	animation?
 TODO troubleshoot the animation on the player running
 TODO Needs a victory screen
 TODO Animation for an end of life
-TODO Animation for character (2 step)
 TODO An authentic HUD with score and time.
 TODO Cleaner camera behavior.
 TODO Sound - music and sound effects
 TODO Add MIT License
 TODO browse tab icon
 TODO BanditState.CHASE and BanditState.RETURN are nearly identical. Refactor.
-TODO The game shouldn't be this wide (top to bottom). Fine for initial version to test. But
-	no "going around" all the obstacles.
 TODO Graphical Pause button on the screen
 TODO keep the game loop synchronous and let reaching the castle set a flag like
 	pendingLevelAdvance. Then, outside the movement logic, call an async loader
