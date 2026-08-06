@@ -705,7 +705,7 @@ function drawWolf(enemy){
         sprites[wolfAnimationFrame],
 
         x,
-        y + 4
+        y + 6
 
     );
 
@@ -746,59 +746,66 @@ function rectsOverlap(ax, ay, aw, ah,
 
 }
 
-function collidesWithWorld(px, py){
+function collidesWithWorld(
+    px,
+    py,
+    offsetX,
+    offsetY,
+    width,
+    height)
+{
 
-    const playerLeft   = px + 4;
-    const playerTop    = py + 4;
-    const playerWidth  = player.width;
-    const playerHeight = player.height;
+    const left = px + offsetX;
+    const top = py + offsetY;
 
-    const startTileX = Math.floor(playerLeft / TILE_SIZE);
-    const startTileY = Math.floor(playerTop / TILE_SIZE);
+    const startTileX = Math.floor(left / TILE_SIZE);
+    const startTileY = Math.floor(top / TILE_SIZE);
 
     const endTileX =
-        Math.floor((playerLeft + playerWidth) / TILE_SIZE);
+        Math.floor((left + width - 1) / TILE_SIZE);
 
     const endTileY =
-        Math.floor((playerTop + playerHeight) / TILE_SIZE);
+        Math.floor((top + height - 1) / TILE_SIZE);
 
-    for(let ty=startTileY; ty<=endTileY; ty++){
+    for(let ty = startTileY; ty <= endTileY; ty++){
 
-        for(let tx=startTileX; tx<=endTileX; tx++){
+        for(let tx = startTileX; tx <= endTileX; tx++){
 
-            if(tx<0 || ty<0 ||
-               tx>=MAP_WIDTH ||
-               ty>=MAP_HEIGHT)
+            if(tx < 0 || ty < 0 ||
+               tx >= MAP_WIDTH ||
+               ty >= MAP_HEIGHT)
                 return true;
 
             const tile = map[ty][tx];
 
-            // Full-tile collision (water, future walls, etc.)
             if(TILE_SOLID[tile]){
 
                 if(tile != TILE.TREE)
                     return true;
+
             }
 
             const shape = TILE_COLLISION[tile];
 
-            if(shape==null)
+            if(shape == null)
                 continue;
 
             if(rectsOverlap(
 
-                playerLeft,
-                playerTop,
-                playerWidth,
-                playerHeight,
+                left,
+                top,
+                width,
+                height,
 
-                tx*TILE_SIZE + shape.x,
-                ty*TILE_SIZE + shape.y,
+                tx * TILE_SIZE + shape.x,
+                ty * TILE_SIZE + shape.y,
                 shape.w,
                 shape.h
 
             )){
+
                 return true;
+
             }
 
         }
@@ -823,7 +830,11 @@ function moveBandit(enemy, dx, dy){
     let nextX = enemy.x + dx;
     let nextY = enemy.y + dy;
 
-    if(collidesWithWorld(nextX, nextY))
+    if(collidesWithWorld(
+        nextX,
+        nextY,
+        4, 10,
+        8, 6))
         return false;
 
     enemy.x = nextX;
@@ -839,8 +850,11 @@ function updateWolf(enemy){
 
     let nextX = enemy.x + enemy.direction * enemy.speed;
 
-    if(collidesWithWorld(nextX, enemy.y)){
-
+    if(collidesWithWorld(
+        nextX,
+        enemy.y,
+        2, 4,
+        12, 6)) {
         enemy.direction *= -1;
 
     }
@@ -859,8 +873,10 @@ function updateBandit(enemy){
         case BanditState.PATROL:
 
             if(collidesWithWorld(
-                enemy.x + enemy.direction*enemy.speed,
-                enemy.y))
+                enemy.x + enemy.direction * enemy.speed,
+                enemy.y,
+                4, 10,
+                8, 6))
             {
                 enemy.direction*=-1;
             }
@@ -1183,8 +1199,11 @@ const playerMoving = (dx != 0 || dy != 0);
 
 let nextX = player.x + dx;
 
-if(!collidesWithWorld(nextX, player.y)){
-
+if(!collidesWithWorld(
+    nextX,
+    player.y,
+    4, 10,
+    8, 6)){
     player.x = nextX;
 
 }
@@ -1193,8 +1212,11 @@ if(!collidesWithWorld(nextX, player.y)){
 
 let nextY = player.y + dy;
 
-if(!collidesWithWorld(player.x, nextY)){
-
+if(!collidesWithWorld(
+    player.x,
+    nextY,
+    4, 10,
+    8, 6)){
     player.y = nextY;
 
 }
