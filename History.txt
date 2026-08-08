@@ -275,20 +275,41 @@ color scheme. Both wolves and bandits looked better after fixing that.
 I finished production Level 3
 
 
+Version 01.27	59 minutes dev	1 minute CPU	5 minutes test		15 hours 15
+
+The logic to detect collisions worked for the old UI, but didn't work after 
+changing the graphics. The first thing that stood out was that the player
+didn't cross the bridge normally - it was shifted down more than expected.
+That was easy to fix. Next was the bandit. It also had UI issues, including
+crossing the bridge. There were a few defects found there. If a bandit was
+directly above water, the bandit would be stuck. An adjustment was needed
+to handle that. After these changes, wolves wouldn't return when it got to
+trees. Another fix was needed there. One more issue was found. If a bandit
+collided with a tree, it would get stuck. That required a fix. A lot of 
+changes, but it works well.
+
+
+Version 01.28	37 minutes dev	1 minute CPU	2 minutes test		15 hours 55
+
+The graphics within the game... there is room for improvements, but is good
+enough for an initial release. Still more details to cover. The screen after
+completing the game was still in demo mode - just a filler screen. ChatGPT
+and I worked on implementing a design: castle image on top, congratulatory
+strings below.
+Started Level 4
+
 
 
 IN PROGRESS build out true levels 1-4
-TODO Now that the sizes have changed the collision checks need to be redone.
 TODO Make the cape purple, like in the title logo
-TODO The wolf UI needs changes. Shape a little blah. Maybe larger head?
-TODO The bandit UI needs changes. Better arm/shoulders, bigger head,
-	animation?
-TODO troubleshoot the animation on the player running
-TODO Needs a victory screen
 TODO Animation for an end of life
 TODO An authentic HUD with score and time.
 TODO Cleaner camera behavior.
 TODO Sound - music and sound effects
+TODO troubleshoot the animation on the player running
+TODO The wolf UI needs changes. Shape a little blah. Maybe larger head?
+TODO The bandit UI needs changes. Better arm/shoulders, bigger head,
+	animation?
 TODO Add MIT License
 TODO browse tab icon
 TODO BanditState.CHASE and BanditState.RETURN are nearly identical. Refactor.

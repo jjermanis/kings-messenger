@@ -76,7 +76,7 @@ const TILE_COLLISION = {
 };
 
 const LEVEL_FILES = [
-    "Level1.json",
+    "Level4.json",
     "Level2.json",
     "Level3.json"
 ];
@@ -306,6 +306,9 @@ const ctx=canvas.getContext("2d");
 const titleLogo = new Image();
 titleLogo.src = "title.png";
 
+const winLogo = new Image();
+winLogo.src = "win.png";
+
 ctx.imageSmoothingEnabled=false;
 
 const State={
@@ -345,6 +348,10 @@ document.addEventListener("keydown",(e)=>{
 
     if(gameState===State.TITLE && e.key==="Enter"){
         startNewGame();
+    }
+
+    if(gameState===State.WIN && e.key==="Enter"){
+        gameState = State.TITLE;
     }
 
     if(e.key==="p" || e.key==="P"){
@@ -1467,13 +1474,56 @@ function render(){
 
     if(gameState===State.WIN){
 
-        ctx.fillStyle="white";
-        ctx.font="16px monospace";
-        ctx.fillText("MISSION",72,90);
-        ctx.fillText("COMPLETE",68,112);
+        ctx.fillStyle="black";
+        ctx.fillRect(0,0,256,240);
 
-        ctx.font="8px monospace";
-        ctx.fillText("Refresh to play again",54,160);
+        //
+        // Draw castle
+        //
+        if(winLogo.complete){
+
+            ctx.drawImage(
+                winLogo,
+                18,     // x
+                12,     // y
+                220,    // width
+                110     // height
+            );
+
+        }
+
+        //
+        // Text
+        //
+        ctx.textAlign="center";
+        ctx.fillStyle="white";
+        ctx.font="bold 16px monospace";
+
+        ctx.fillText(
+            "The kingdom celebrates",
+            128,
+            139
+        );
+
+        ctx.fillText(
+            "your bravery.",
+            128,
+            153
+        );
+
+        ctx.fillText(
+            "Thank you for playing!",
+            128,
+            183
+        );
+
+        ctx.fillText(
+            "(press Enter)",
+            128,
+            215
+        );
+
+        ctx.textAlign="left";
 
         return;
 
