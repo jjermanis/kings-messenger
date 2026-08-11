@@ -299,19 +299,41 @@ strings below.
 Started Level 4
 
 
+Version 01.29	49 minutes dev	3 minutes CPU	3 minutes test		16 hours 50
+
+There has been a substantial amount of development. There is no audio at all.
+Time to start on that. Leading off with music that will be played during
+levels.
+I asked ChatGPT to create three medieval action themes, in NES-style. My
+plan was to pick the best. I liked all three. I saved them all; I'll tie
+levels to specific songs later.
+Chat's original idea was to have the music defined directly structures in
+the game. I didn't want to store that into the game. Similar to levels, I
+wanted to music encoded in JSON.
+After that, it was enloading the song JSON in the game, and playing them 
+in levels. It was quite a few changes. It worked on the first try. A
+pleasant surprise. It was a lot of code. It was over 300 lines of code.
+I was surprised to see that.
+I'm glad I have levels and songs stored outside in JSON. The current version
+is nearly 2k lines of code.
+
+
 
 IN PROGRESS build out true levels 1-4
+IN PROGRESS Sound - music and sound effects
 TODO Make the cape purple, like in the title logo
 TODO Animation for an end of life
 TODO An authentic HUD with score and time.
 TODO Cleaner camera behavior.
-TODO Sound - music and sound effects
 TODO troubleshoot the animation on the player running
 TODO The wolf UI needs changes. Shape a little blah. Maybe larger head?
 TODO The bandit UI needs changes. Better arm/shoulders, bigger head,
 	animation?
+TODO Tie levels to different songs
 TODO Add MIT License
 TODO browse tab icon
+TODO that is about 300 lines of code to play music. In a normal project, that
+	would be implemented in another class. Is that feasible for this?
 TODO BanditState.CHASE and BanditState.RETURN are nearly identical. Refactor.
 TODO Graphical Pause button on the screen
 TODO keep the game loop synchronous and let reaching the castle set a flag like
