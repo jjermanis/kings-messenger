@@ -316,13 +316,25 @@ pleasant surprise. It was a lot of code. It was over 300 lines of code.
 I was surprised to see that.
 I'm glad I have levels and songs stored outside in JSON. The current version
 is nearly 2k lines of code.
+Continued Level 4
+
+
+Version 01.30	12 minutes dev	0 minutes CPU	3 minutes test		17 hours 5
+
+Three songs have been crafted, but only one is used. Integrated it to play
+specific songs for each levels. The order of the song IDs by level: 1, 2, 1, 3.
+This a fairly easy change to make, and the first attempt worked.
+Level 4 is complete. This is what I plan to have for the initial release.
 
 
 
-IN PROGRESS build out true levels 1-4
 IN PROGRESS Sound - music and sound effects
+TODO I'm seeing this error in Inspect in browser. What causes this?
+	GET http://localhost:1498/favicon.ico 404 (File not found)
 TODO Make the cape purple, like in the title logo
 TODO Animation for an end of life
+TODO Make the trees tighter. Player can get close. They cannot get trough a 
+	pack of thick trees without gaps.
 TODO An authentic HUD with score and time.
 TODO Cleaner camera behavior.
 TODO troubleshoot the animation on the player running

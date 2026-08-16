@@ -83,7 +83,16 @@ const LEVEL_FILES = [
 ];
 
 const MUSIC_FILES = [
-    "Song1.json"
+    "Song1.json",
+    "Song2.json",
+    "Song3.json"
+];
+
+const MUSIC_FOR_LEVEL = [
+    0, 
+    1,
+    0,
+    2
 ];
 
 const PLAYER_RIGHT_STAND = [
@@ -843,7 +852,9 @@ function startCurrentLevelMusic(){
     if(music.length === 0)
         return;
 
-    startMusic(music[0]);
+    const musicIndex = MUSIC_FOR_LEVEL[currentLevel];
+
+    startMusic(music[musicIndex]);
 }
 
 const player = {
@@ -1978,7 +1989,9 @@ async function loop(){
 
     await loadLevel(LEVEL_FILES[currentLevel]);
 
-    await loadMusic(MUSIC_FILES[0]);
+    for(const musicFile of MUSIC_FILES){
+        await loadMusic(musicFile);
+    }
 
     resetPositions();
 
