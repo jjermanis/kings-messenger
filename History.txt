@@ -327,6 +327,18 @@ This a fairly easy change to make, and the first attempt worked.
 Level 4 is complete. This is what I plan to have for the initial release.
 
 
+Version 01.31	14 minutes dev	0 minutes CPU	1 minute test		17 hours 20
+
+This one is just an optimization. Well, optimization as far as AI goes. Good
+software practice in general. Recently, 300+ lines of code were added to play
+music within the game. That's a lot of code, and only is used to play music.
+I asked ChatGPT to move the code to an external file. That would allow 
+development to be easier with smaller files. Works with AI, good practice with
+normal dev.
+ChatGPT suggested 7 music-specific functions. I moved it to a new file, 
+music.js. I just add a script reference to the game app. Easy change,'
+ 
+
 
 IN PROGRESS Sound - music and sound effects
 TODO I'm seeing this error in Inspect in browser. What causes this?
@@ -344,8 +356,6 @@ TODO The bandit UI needs changes. Better arm/shoulders, bigger head,
 TODO Tie levels to different songs
 TODO Add MIT License
 TODO browse tab icon
-TODO that is about 300 lines of code to play music. In a normal project, that
-	would be implemented in another class. Is that feasible for this?
 TODO BanditState.CHASE and BanditState.RETURN are nearly identical. Refactor.
 TODO Graphical Pause button on the screen
 TODO keep the game loop synchronous and let reaching the castle set a flag like
