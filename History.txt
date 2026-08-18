@@ -339,12 +339,27 @@ ChatGPT suggested 7 music-specific functions. I moved it to a new file,
 music.js. I just add a script reference to the game app. Easy change,'
  
 
+Version 01.32	36 minutes dev	1 minute CPU	3 minute test		18 hours
+
+I had seen this error in Inspect while playing the game. It's seen when the
+game starts:
+GET http://localhost:1498/favicon.ico 404 (File not found)
+There were no references to favicon anywhere in my code. ChatGPT said it
+was not an error for concern. The server can try it. If there is no .ico 
+file, it's fine. I agree: everything functions properly.
+I wanted to have it be more clear when the player loses a life. Right now,
+it just immediately moves the character back to the beginning of the level.
+I asked ChatGPT for multiple changes. I asked that everything stops and the
+screen goes dim. It stays like that for 1 second, then the level restarts
+(if there are remaining lives). There were a couple defects, but it works
+well.
+Next is to add some (sad) music to losing a life.
+
+
 
 IN PROGRESS Sound - music and sound effects
-TODO I'm seeing this error in Inspect in browser. What causes this?
-	GET http://localhost:1498/favicon.ico 404 (File not found)
+IN PROGRESS Animation for an end of life
 TODO Make the cape purple, like in the title logo
-TODO Animation for an end of life
 TODO Make the trees tighter. Player can get close. They cannot get trough a 
 	pack of thick trees without gaps.
 TODO An authentic HUD with score and time.
@@ -353,7 +368,6 @@ TODO troubleshoot the animation on the player running
 TODO The wolf UI needs changes. Shape a little blah. Maybe larger head?
 TODO The bandit UI needs changes. Better arm/shoulders, bigger head,
 	animation?
-TODO Tie levels to different songs
 TODO Add MIT License
 TODO browse tab icon
 TODO BanditState.CHASE and BanditState.RETURN are nearly identical. Refactor.

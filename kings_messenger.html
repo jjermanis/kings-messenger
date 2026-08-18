@@ -333,7 +333,8 @@ const State={
     PLAY:2,
     PAUSE:3,
     WIN:4,
-    GAME_OVER:5
+    GAME_OVER:5,
+    END_OF_LIFE:6
 };
 
 const ENEMY={
@@ -356,6 +357,7 @@ let lastTimerTick = 0;
 let missionIntroStartTime = 0;
 let pauseStartTime = 0;
 let gameOverStartTime = 0;
+let endOfLifeStartTime = 0;
 
 const keys={};
 
@@ -1110,17 +1112,9 @@ function loseLife(){
 
     player.remainingLives--;
 
-    if(player.remainingLives < 0){
+    endOfLifeStartTime = performance.now();
 
-        gameState = State.GAME_OVER;
-        gameOverStartTime = performance.now();
-
-        return;
-    }
-
-    resetPositions();
-
-    startCurrentLevelMusic();
+    gameState = State.END_OF_LIFE;
 }
 
 function resetPositions(){
@@ -1201,6 +1195,31 @@ if(gameState === State.GAME_OVER){
 
     return;
 
+}
+
+if(gameState === State.END_OF_LIFE){
+
+    if(performance.now() - endOfLifeStartTime >= 1000){
+
+        if(player.remainingLives < 0){
+
+            gameState = State.GAME_OVER;
+            gameOverStartTime = performance.now();
+
+        }
+        else{
+
+            resetPositions();
+
+            startCurrentLevelMusic();
+
+            gameState = State.PLAY;
+
+        }
+
+    }
+
+    return;
 }
 
 if(gameState == State.MISSION_INTRO){
@@ -1455,6 +1474,12 @@ function drawMap(){
 
 function drawHUD(){
 
+    let livesToDisplay = player.remainingLives;
+
+    if(gameState === State.END_OF_LIFE){
+        livesToDisplay++;
+    }
+
     ctx.fillStyle="#000000";
     ctx.fillRect(0,0,256,16);
 
@@ -1462,7 +1487,7 @@ function drawHUD(){
     ctx.font="16px monospace";
 
     ctx.fillText(
-        "LIVES " + player.remainingLives +
+        "LIVES " + livesToDisplay +
         "   TIME " + player.timeRemaining,
         4,
         11
@@ -1666,6 +1691,18 @@ if(gameState == State.MISSION_INTRO){
     drawPlayer();
 
     drawHUD();
+
+    if(gameState === State.END_OF_LIFE){
+
+        ctx.fillStyle = "rgba(0,0,0,0.5)";
+        ctx.fillRect(
+            0,
+            0,
+            SCREEN_WIDTH,
+            SCREEN_HEIGHT
+        );
+
+    }
 
 }
 

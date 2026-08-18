@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>King's Messenger - Music Tester</title>
+<style>
+    body {
+        margin: 0;
+        background: #202020;
+        color: white;
+        font-family: monospace;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        min-height: 100vh;
+    }
+
+    #app {
+        width: 620px;
+        margin-top: 40px;
+        padding: 24px;
+        box-sizing: border-box;
+        background: #000;
+        border: 4px solid white;
+        text-align: center;
+    }
+
+    h1 {
+        margin: 0 0 8px 0;
+        font-size: 24px;
+    }
+
+    .subtitle {
+        margin-bottom: 24px;
+        color: #ccc;
+        font-size: 14px;
+    }
+
+    button {
+        font-family: monospace;
+        font-weight: bold;
+        font-size: 16px;
+        padding: 12px 18px;
+        margin: 6px;
+        cursor: pointer;
+        background: #222;
+        color: white;
+        border: 2px solid white;
+    }
+
+    button:hover {
+        background: #444;
+    }
+
+    button.active {
+        background: #6a20d9;
+    }
+
+    #status {
+        margin-top: 20px;
+        min-height: 40px;
+        font-size: 14px;
+        line-height: 20px;
+    }
+
+    #description {
+        color: #ccc;
+        margin-top: 8px;
+        min-height: 40px;
+    }
+
+    .note {
+        margin-top: 28px;
+        color: #888;
+        font-size: 12px;
+    }
+</style>
+</head>
+
+<body>
+<div id="app">
+    <h1>KING'S MESSENGER</h1>
+    <div class="subtitle">NES-STYLE LEVEL MUSIC TESTER</div>
+
+    <button data-song="0">SONG 1<br><small>ROYAL ROAD</small></button>
+    <button data-song="1">SONG 2<br><small>THE JOURNEY</small></button>
+    <button data-song="2">SONG 3<br><small>MESSENGER</small></button>
+
+    <div id="status">Click a song to play it.</div>
+    <div id="description"></div>
+
+    <button id="stop">STOP</button>
+
+    <div class="note">
+        Each song is designed as a short, energetic loop.<br>
+        The browser may require a click before audio can begin.
+    </div>
+</div>
+
+<script>
+/*
+    King's Messenger music experiments.
+
+    These are intentionally note-based rather than recorded audio.
+    The synthesizer uses:
+        Square 1 = melody
+        Square 2 = harmony/countermelody
+        Triangle = bass
+        Noise = percussion
+
+    All three pieces are designed to loop continuously.
+*/
+
+const SONGS = [
+
+    // ------------------------------------------------------------
+    // SONG 1 - ROYAL ROAD
+    // Bright, driving, slightly heroic.
+    // ------------------------------------------------------------
+    {
+        name: "ROYAL ROAD",
+        description: "Bright and heroic. Probably the closest to the intended direction.",
+        bpm: 168,
+
+        melody: [
+            "E5","G5","A5","B5", "A5","G5","E5","D5",
+            "E5","G5","A5","C6", "B5","A5","G5","E5",
+
+            "G5","A5","B5","D6", "C6","B5","A5","G5",
+            "E5","G5","A5","B5", "A5","G5","E5","D5",
+
+            "E5","G5","A5","B5", "D6","B5","A5","G5",
+            "E5","G5","A5","C6", "B5","A5","G5","E5",
+
+            "D5","E5","G5","A5", "G5","E5","D5","B4",
+            "E5","G5","A5","B5", "G5","E5","D5","E5"
+        ],
+
+        harmony: [
+            "C5","E5","F5","G5", "F5","E5","C5","B4",
+            "C5","E5","F5","A5", "G5","F5","E5","C5",
+
+            "E5","F5","G5","B5", "A5","G5","F5","E5",
+            "C5","E5","F5","G5", "F5","E5","C5","B4",
+
+            "C5","E5","F5","G5", "B5","G5","F5","E5",
+            "C5","E5","F5","A5", "G5","F5","E5","C5",
+
+            "B4","C5","E5","F5", "E5","C5","B4","G4",
+            "C5","E5","F5","G5", "E5","C5","B4","C5"
+        ],
+
+        bass: [
+            "E2","E2","E2","E2", "C2","C2","D2","D2",
+            "E2","E2","E2","E2", "A2","A2","B2","B2",
+
+            "G2","G2","G2","G2", "D2","D2","E2","E2",
+            "C2","C2","C2","C2", "B1","B1","B1","B1",
+
+            "E2","E2","E2","E2", "G2","G2","A2","A2",
+            "C2","C2","C2","C2", "A2","A2","B2","B2",
+
+            "E2","E2","D2","D2", "C2","C2","B1","B1",
+            "E2","E2","E2","E2", "B1","B1","E2","E2"
+        ]
+    },
+
+    // ------------------------------------------------------------
+    // SONG 2 - THE JOURNEY
+    // More mysterious, but still consistently energetic.
+    // ------------------------------------------------------------
+    {
+        name: "THE JOURNEY",
+        description: "More adventurous and mysterious, with a stronger minor-key character.",
+        bpm: 160,
+
+        melody: [
+            "A4","C5","D5","E5", "G5","E5","D5","C5",
+            "A4","C5","D5","F5", "E5","D5","C5","A4",
+
+            "C5","D5","E5","G5", "A5","G5","E5","D5",
+            "C5","E5","F5","A5", "G5","F5","E5","C5",
+
+            "A4","C5","D5","E5", "G5","A5","G5","E5",
+            "D5","F5","G5","A5", "C6","A5","G5","F5",
+
+            "E5","D5","C5","A4", "C5","D5","E5","G5",
+            "A5","G5","E5","D5", "C5","A4","G4","A4"
+        ],
+
+        harmony: [
+            "E4","G4","A4","C5", "B4","C5","A4","G4",
+            "E4","G4","A4","D5", "C5","A4","G4","E4",
+
+            "G4","A4","C5","E5", "D5","E5","C5","A4",
+            "G4","C5","D5","F5", "E5","D5","C5","G4",
+
+            "E4","G4","A4","C5", "B4","C5","D5","C5",
+            "A4","C5","D5","F5", "E5","F5","D5","C5",
+
+            "B4","A4","G4","E4", "G4","A4","C5","E5",
+            "D5","C5","A4","G4", "E4","E4","D4","E4"
+        ],
+
+        bass: [
+            "A2","A2","A2","A2", "F2","F2","G2","G2",
+            "A2","A2","A2","A2", "D2","D2","E2","E2",
+
+            "C2","C2","C2","C2", "G2","G2","A2","A2",
+            "F2","F2","F2","F2", "E2","E2","E2","E2",
+
+            "A2","A2","A2","A2", "C3","C3","D3","D3",
+            "F2","F2","F2","F2", "D2","D2","E2","E2",
+
+            "A2","G2","F2","E2", "F2","G2","A2","C3",
+            "D3","C3","A2","G2", "E2","E2","A2","A2"
+        ]
+    },
+
+    // ------------------------------------------------------------
+    // SONG 3 - MESSENGER
+    // Fast, punchy, and deliberately repetitive.
+    // ------------------------------------------------------------
+    {
+        name: "MESSENGER",
+        description: "The most energetic version: short phrases and strong forward motion.",
+        bpm: 176,
+
+        melody: [
+            "G5","G5","A5","B5", "D6","B5","A5","G5",
+            "E5","E5","G5","A5", "C6","A5","G5","E5",
+
+            "G5","A5","B5","D6", "E6","D6","B5","A5",
+            "G5","E5","G5","A5", "B5","A5","G5","E5",
+
+            "D6","D6","E6","D6", "B5","A5","G5","A5",
+            "C6","C6","D6","C6", "A5","G5","E5","G5",
+
+            "B5","B5","A5","G5", "E5","G5","A5","B5",
+            "D6","B5","A5","G5", "E5","D5","E5","G5"
+        ],
+
+        harmony: [
+            "D5","D5","E5","G5", "B5","G5","E5","D5",
+            "C5","C5","E5","F5", "A5","F5","E5","C5",
+
+            "D5","E5","G5","B5", "C6","B5","G5","E5",
+            "D5","C5","E5","F5", "G5","F5","E5","C5",
+
+            "B4","B4","C5","B4", "G4","F4","E4","F4",
+            "A4","A4","B4","A4", "F5","E5","C5","E5",
+
+            "G4","G4","F4","E4", "C5","E5","F5","G5",
+            "B5","G5","F5","E5", "C5","B4","C5","E5"
+        ],
+
+        bass: [
+            "G2","G2","G2","G2", "E2","E2","F2","F2",
+            "C2","C2","C2","C2", "D2","D2","E2","E2",
+
+            "G2","G2","G2","G2", "B2","B2","C3","C3",
+            "D2","D2","D2","D2", "E2","E2","G2","G2",
+
+            "G2","G2","F2","F2", "E2","E2","D2","D2",
+            "C2","C2","D2","D2", "E2","E2","F2","F2",
+
+            "G2","G2","F2","F2", "E2","E2","D2","D2",
+            "G2","G2","G2","G2", "D2","D2","E2","E2"
+        ]
+    }
+];
+
+let audioContext = null;
+let masterGain = null;
+let activeSources = [];
+let playing = false;
+let selectedSong = 0;
+let loopTimer = null;
+
+const status = document.getElementById("status");
+const description = document.getElementById("description");
+const buttons = [...document.querySelectorAll("[data-song]")];
+
+function noteFrequency(note) {
+    if (!note) return 0;
+
+    const match = note.match(/^([A-G])([#b]?)(\d)$/);
+    if (!match) return 0;
+
+    const letter = match[1];
+    const accidental = match[2];
+    const octave = Number(match[3]);
+
+    const semitones = {
+        C: 0, "C#": 1, Db: 1,
+        D: 2, "D#": 3, Eb: 3,
+        E: 4,
+        F: 5, "F#": 6, Gb: 6,
+        G: 7, "G#": 8, Ab: 8,
+        A: 9, "A#": 10, Bb: 10,
+        B: 11
+    };
+
+    const key = letter + accidental;
+    const midi = (octave + 1) * 12 + semitones[key];
+    return 440 * Math.pow(2, (midi - 69) / 12);
+}
+
+function createAudio() {
+    if (!audioContext) {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+        masterGain = audioContext.createGain();
+        masterGain.gain.value = 0.18;
+        masterGain.connect(audioContext.destination);
+    }
+
+    if (audioContext.state === "suspended") {
+        audioContext.resume();
+    }
+}
+
+function squareNote(time, duration, frequency, volume, duty = 0.5) {
+    if (!frequency) return;
+
+    const osc = audioContext.createOscillator();
+    const gain = audioContext.createGain();
+
+    // Web Audio has no NES duty-cycle oscillator, so approximate it
+    // with a square wave and a small amount of filtering.
+    osc.type = "square";
+    osc.frequency.setValueAtTime(frequency, time);
+
+    const filter = audioContext.createBiquadFilter();
+    filter.type = "lowpass";
+    filter.frequency.value = duty === 0.25 ? 3200 : 4200;
+    filter.Q.value = 0.2;
+
+    gain.gain.setValueAtTime(0.0001, time);
+    gain.gain.linearRampToValueAtTime(volume, time + 0.008);
+    gain.gain.setValueAtTime(volume * 0.75, time + duration * 0.65);
+    gain.gain.exponentialRampToValueAtTime(0.0001, time + duration - 0.008);
+
+    osc.connect(filter);
+    filter.connect(gain);
+    gain.connect(masterGain);
+
+    osc.start(time);
+    osc.stop(time + duration);
+    activeSources.push(osc);
+}
+
+function triangleNote(time, duration, frequency, volume) {
+    if (!frequency) return;
+
+    const osc = audioContext.createOscillator();
+    const gain = audioContext.createGain();
+
+    osc.type = "triangle";
+    osc.frequency.setValueAtTime(frequency, time);
+
+    gain.gain.setValueAtTime(0.0001, time);
+    gain.gain.linearRampToValueAtTime(volume, time + 0.008);
+    gain.gain.setValueAtTime(volume * 0.85, time + duration * 0.8);
+    gain.gain.exponentialRampToValueAtTime(0.0001, time + duration - 0.008);
+
+    osc.connect(gain);
+    gain.connect(masterGain);
+
+    osc.start(time);
+    osc.stop(time + duration);
+    activeSources.push(osc);
+}
+
+function noiseHit(time, duration, volume, high) {
+    const bufferSize = Math.floor(audioContext.sampleRate * duration);
+    const buffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
+    const data = buffer.getChannelData(0);
+
+    for (let i = 0; i < bufferSize; i++) {
+        data[i] = Math.random() * 2 - 1;
+    }
+
+    const source = audioContext.createBufferSource();
+    source.buffer = buffer;
+
+    const filter = audioContext.createBiquadFilter();
+    filter.type = high ? "highpass" : "lowpass";
+    filter.frequency.value = high ? 5000 : 900;
+
+    const gain = audioContext.createGain();
+    gain.gain.setValueAtTime(volume, time);
+    gain.gain.exponentialRampToValueAtTime(0.0001, time + duration);
+
+    source.connect(filter);
+    filter.connect(gain);
+    gain.connect(masterGain);
+
+    source.start(time);
+    source.stop(time + duration);
+    activeSources.push(source);
+}
+
+function playSong(index) {
+    stopSong();
+
+    selectedSong = index;
+    createAudio();
+
+    const song = SONGS[index];
+    const stepDuration = 60 / song.bpm / 2; // eighth-note pulse
+    const steps = song.melody.length;
+    const start = audioContext.currentTime + 0.05;
+
+    for (let i = 0; i < steps; i++) {
+        const t = start + i * stepDuration;
+
+        squareNote(t, stepDuration * 0.92,
+                   noteFrequency(song.melody[i]), 0.045, 0.5);
+
+        squareNote(t, stepDuration * 0.88,
+                   noteFrequency(song.harmony[i]), 0.030, 0.25);
+
+        triangleNote(t, stepDuration * 0.95,
+                     noteFrequency(song.bass[i]), 0.065);
+
+        // Simple repeating NES-like percussion pattern.
+        if (i % 4 === 0) {
+            noiseHit(t, 0.045, 0.055, false);
+        }
+        if (i % 4 === 2) {
+            noiseHit(t, 0.025, 0.025, true);
+        }
+    }
+
+    const loopLength = steps * stepDuration;
+
+    playing = true;
+    status.textContent = "Playing: " + song.name + "  •  looping";
+    description.textContent = song.description;
+
+    buttons.forEach((button, i) => {
+        button.classList.toggle("active", i === index);
+    });
+
+    loopTimer = setTimeout(() => {
+        if (playing && selectedSong === index) {
+            playSong(index);
+        }
+    }, loopLength * 1000 - 80);
+}
+
+function stopSong() {
+    playing = false;
+
+    if (loopTimer) {
+        clearTimeout(loopTimer);
+        loopTimer = null;
+    }
+
+    for (const source of activeSources) {
+        try { source.stop(); } catch (e) {}
+    }
+
+    activeSources = [];
+
+    status.textContent = "Stopped.";
+    description.textContent = "";
+    buttons.forEach(button => button.classList.remove("active"));
+}
+
+buttons.forEach((button, index) => {
+    button.addEventListener("click", () => playSong(index));
+});
+
+document.getElementById("stop").addEventListener("click", stopSong);
+</script>
+</body>
+</html>
