@@ -358,6 +358,7 @@ let missionIntroStartTime = 0;
 let pauseStartTime = 0;
 let gameOverStartTime = 0;
 let endOfLifeStartTime = 0;
+let endOfLifeMusicStartTime = 0;
 
 const keys={};
 
@@ -419,6 +420,7 @@ document.addEventListener("keyup",(e)=>{
 const map=[];
 
 const music=[];
+let endOfLifeMusic = null;
 
 async function loadLevel(levelFile){
 
@@ -1113,6 +1115,7 @@ function loseLife(){
     player.remainingLives--;
 
     endOfLifeStartTime = performance.now();
+    endOfLifeMusicPlaying = false;
 
     gameState = State.END_OF_LIFE;
 }
@@ -1199,7 +1202,23 @@ if(gameState === State.GAME_OVER){
 
 if(gameState === State.END_OF_LIFE){
 
-    if(performance.now() - endOfLifeStartTime >= 1000){
+    const elapsed =
+        performance.now() - endOfLifeStartTime;
+
+    if(elapsed >= 250 && endOfLifeMusic !== null){
+
+        if(!endOfLifeMusicPlaying){
+
+            startMusic(endOfLifeMusic);
+            endOfLifeMusicPlaying = true;
+
+        }
+
+    }
+
+    if(elapsed >= 1500){
+
+        stopMusic();
 
         if(player.remainingLives < 0){
 
@@ -1723,6 +1742,9 @@ async function loop(){
     for(const musicFile of MUSIC_FILES){
         await loadMusic(musicFile);
     }
+
+    const response = await fetch("EndOfLife1.json");
+    endOfLifeMusic = await response.json();
 
     resetPositions();
 

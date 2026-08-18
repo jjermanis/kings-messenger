@@ -339,7 +339,7 @@ ChatGPT suggested 7 music-specific functions. I moved it to a new file,
 music.js. I just add a script reference to the game app. Easy change,'
  
 
-Version 01.32	36 minutes dev	1 minute CPU	3 minute test		18 hours
+Version 01.32	36 minutes dev	1 minute CPU	3 minutes test		18 hours
 
 I had seen this error in Inspect while playing the game. It's seen when the
 game starts:
@@ -356,9 +356,18 @@ well.
 Next is to add some (sad) music to losing a life.
 
 
+Version 01.33	23 minutes dev	0 minutes CPU	2 minutes test		18 hours 25
 
-IN PROGRESS Sound - music and sound effects
-IN PROGRESS Animation for an end of life
+Continuing, adding the defeat music when losing a life. It's only 4 notes and
+play for a bit more than a second. The flow of the song: wait 250ms, play
+the song, then exit. The initial version cut the song off in the middle 
+before going back to the game. I could resolve that manually myself. There 
+was another easy defect. When the game was over, the defeat music kept
+playing. It would play on the game over screen, and even back at the title.
+The was another thing I could resolve myself, a 1-liner.
+
+
+
 TODO Make the cape purple, like in the title logo
 TODO Make the trees tighter. Player can get close. They cannot get trough a 
 	pack of thick trees without gaps.

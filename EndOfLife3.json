@@ -1,0 +1,29 @@
+{
+    "name": "THE MESSAGE ENDS",
+    "description": "A solemn medieval-sounding phrase with a falling final note.",
+    "bpm": 92,
+    "melody": [
+        "D5",
+        "C5",
+        "A4",
+        "G4"
+    ],
+    "harmony": [
+        "A4",
+        "G4",
+        "F4",
+        "D4"
+    ],
+    "bass": [
+        "D2",
+        "C2",
+        "A1",
+        "G1"
+    ],
+    "drums": [
+        null,
+        null,
+        null,
+        null
+    ]
+}

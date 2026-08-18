@@ -1,0 +1,29 @@
+{
+    "name": "FALLEN",
+    "description": "A slightly more dramatic four-note descent, ending with a darker unresolved feeling.",
+    "bpm": 88,
+    "melody": [
+        "E5",
+        "D5",
+        "C5",
+        "A4"
+    ],
+    "harmony": [
+        "C5",
+        "B4",
+        "A4",
+        "F4"
+    ],
+    "bass": [
+        "A2",
+        "G2",
+        "F2",
+        "D2"
+    ],
+    "drums": [
+        null,
+        null,
+        null,
+        null
+    ]
+}
