@@ -367,23 +367,36 @@ playing. It would play on the game over screen, and even back at the title.
 The was another thing I could resolve myself, a 1-liner.
 
 
+Version 01.34	27 minutes dev	1 minutes CPU	2 minutes test		18 hours 55
 
-TODO Make the cape purple, like in the title logo
-TODO Make the trees tighter. Player can get close. They cannot get trough a 
-	pack of thick trees without gaps.
-TODO An authentic HUD with score and time.
-TODO Cleaner camera behavior.
-TODO troubleshoot the animation on the player running
-TODO The wolf UI needs changes. Shape a little blah. Maybe larger head?
-TODO The bandit UI needs changes. Better arm/shoulders, bigger head,
-	animation?
+A long time item on the list was to make the cape purple. An easy change, I
+did in manually. I didn't like the look. I tried a few things. Ultimately, I
+went with a darker blue to the hat. It's not perfect, but better, and what
+I'll go with for now.
+There was a way for players to cheat. I wanted the players to get close to
+the trees. But with these settings, the plan could run between trees, 
+providing an easy hiding place. I worked with ChatGPT to increase the 
+collision size of the player and the tree. Now the player cannot between a
+pair of trees, neither horizontally nor vertically.
+
+
+
+TODO there was the new change to tighten the trees to provide sneaking
+	around levels hiding. This has a side effect. If two trees are
+	diagonally adjacent, that also won't let the player through.
+	To resolve, simple diagonally adjacent trees (with nothing else)
+	should be removed from all levels.
 TODO Add MIT License
 TODO browse tab icon
 TODO BanditState.CHASE and BanditState.RETURN are nearly identical. Refactor.
+TODO The wolf UI needs changes. Shape a little blah. Maybe larger head?
+TODO The bandit UI needs changes. Better arm/shoulders, bigger head,
+	animation?
 TODO Graphical Pause button on the screen
 TODO keep the game loop synchronous and let reaching the castle set a flag like
 	pendingLevelAdvance. Then, outside the movement logic, call an async loader
 	once. (That's a quote from Chat)
+TODO Victory music when they have won
 Maybe Better handling for character in front of or behind objects. Right now, it
 	looks like the character is in front of everything.
 

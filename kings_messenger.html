@@ -69,10 +69,10 @@ const TILE_COLLISION = {
 
     // trunk only
     [TILE.TREE]:{
-        x:6,
-        y:9,
-        w:4,
-        h:7
+        x:4,
+        y:7,
+        w:8,
+        h:9
     }
 
 };
@@ -164,7 +164,7 @@ const PLAYER_PALETTE = {
 
     K:"#000000",
     S:"#F8B800",
-    G:"#00A800",
+    G:"#0000BC",
     T:"#D8A060",
     B:"#0058F8",
     R:"#7C3C00"
@@ -1319,8 +1319,8 @@ let nextX = player.x + dx;
 if(!collidesWithWorld(
     nextX,
     player.y,
-    4, 10,
-    8, 6)){
+    3, 8,
+    10, 8)){
     player.x = nextX;
 
 }
@@ -1332,8 +1332,8 @@ let nextY = player.y + dy;
 if(!collidesWithWorld(
     player.x,
     nextY,
-    4, 10,
-    8, 6)){
+    3, 8,
+    10, 8)){
     player.y = nextY;
 
 }
