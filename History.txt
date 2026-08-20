@@ -380,12 +380,18 @@ collision size of the player and the tree. Now the player cannot between a
 pair of trees, neither horizontally nor vertically.
 
 
+Version 01.35	20 minutes dev	0 minutes CPU	5 minutes test
 
-TODO there was the new change to tighten the trees to provide sneaking
-	around levels hiding. This has a side effect. If two trees are
-	diagonally adjacent, that also won't let the player through.
-	To resolve, simple diagonally adjacent trees (with nothing else)
-	should be removed from all levels.
+I noticed a quirk after that most recent change. Consider two trees next
+to each other, diagonally. Because of the previous change, you cannot get
+through either horizontally or vertically. That means that even though it
+doesn't look like a block, you can't get through.
+I went through all 4 levels. I changed the maps to get rid of a diagonals
+like that. There are either more connections, or one of the trees is removed.
+
+
+
+TODO It looks like Bandits can go threw trees. What are its dimensions?
 TODO Add MIT License
 TODO browse tab icon
 TODO BanditState.CHASE and BanditState.RETURN are nearly identical. Refactor.
