@@ -913,8 +913,8 @@ function moveBandit(enemy, dx, dy){
     if(collidesWithWorld(
         nextX,
         nextY,
-        4, 10,
-        8, 6))
+        3, 8,
+        10, 8))
         return false;
 
     enemy.x = nextX;
@@ -946,6 +946,30 @@ function updateWolf(enemy){
 
 }
 
+function moveBanditToward(enemy, targetX, targetY){
+
+    const dx = targetX - enemy.x;
+    const dy = targetY - enemy.y;
+
+    const moveX = Math.sign(dx) * enemy.speed;
+    const moveY = Math.sign(dy) * enemy.speed;
+
+    if(Math.abs(dx) >= Math.abs(dy)){
+
+        if(!moveBandit(enemy, moveX, 0)){
+            moveBandit(enemy, 0, moveY);
+        }
+
+    }
+    else{
+
+        if(!moveBandit(enemy, 0, moveY)){
+            moveBandit(enemy, moveX, 0);
+        }
+
+    }
+}
+
 function updateBandit(enemy){
 
     switch(enemy.state){
@@ -955,8 +979,8 @@ function updateBandit(enemy){
             if(collidesWithWorld(
                 enemy.x + enemy.direction * enemy.speed,
                 enemy.y,
-                4, 10,
-                8, 6))
+                3, 8,
+                10, 8))
             {
                 enemy.direction*=-1;
             }
@@ -994,100 +1018,38 @@ function updateBandit(enemy){
 
         case BanditState.CHASE: {
 
-    let dx = player.x - enemy.x;
-    let dy = player.y - enemy.y;
+            moveBanditToward(
+                enemy,
+                player.x,
+                player.y
+            );
 
-    const moveX = Math.sign(dx) * enemy.speed;
-    const moveY = Math.sign(dy) * enemy.speed;
-
-    if(Math.abs(dx) >= Math.abs(dy)){
-
-        // Horizontal is the preferred direction
-
-        if(!moveBandit(enemy, moveX,0)){
-
-            moveBandit(enemy, 0,moveY);
-
-        }
-
-    }
-    else{
-
-        // Vertical is the preferred direction
-
-        if(!moveBandit(enemy, 0,moveY)){
-
-            moveBandit(enemy, moveX,0);
-
-        }
-
-    }
-
-    if(
-        distanceSquared(
-            enemy.startX,
-            enemy.startY,
-            enemy.x,
-            enemy.y
-        )
-        >
-        BANDIT_CHASE_DISTANCE *
-        BANDIT_CHASE_DISTANCE
-    ){
-
-        enemy.state = BanditState.RETURN;
-
-    }
-
-    break;
+            if(distanceSquared( enemy.startX, enemy.startY, enemy.x, enemy.y ) >
+                (BANDIT_CHASE_DISTANCE * BANDIT_CHASE_DISTANCE)) {
+                enemy.state = BanditState.RETURN;
+            }
+            break;
         }
         case BanditState.RETURN: {
 
-    dx = enemy.startX - enemy.x;
-    dy = enemy.startY - enemy.y;
+            moveBanditToward(
+                enemy,
+                enemy.startX,
+                enemy.startY
+            );
 
-    const returnMoveX = Math.sign(dx) * enemy.speed;
-    const returnMoveY = Math.sign(dy) * enemy.speed;
+            if(Math.abs(enemy.startX - enemy.x) < enemy.speed &&
+               Math.abs(enemy.startY - enemy.y) < enemy.speed){
 
-    if(Math.abs(dx) >= Math.abs(dy)){
+                enemy.x = enemy.startX;
+                enemy.y = enemy.startY;
 
-        // Horizontal is the preferred direction
+                enemy.state = BanditState.PATROL;
+            }
 
-        if(!moveBandit(enemy, returnMoveX, 0)){
-
-            moveBandit(enemy, 0, returnMoveY);
-
-        }
-
-    }
-    else{
-
-        // Vertical is the preferred direction
-
-        if(!moveBandit(enemy, 0, returnMoveY)){
-
-            moveBandit(enemy, returnMoveX, 0);
-
-        }
-
-    }
-
-    // Have we reached home?
-
-    if(Math.abs(dx) < enemy.speed &&
-       Math.abs(dy) < enemy.speed){
-
-        enemy.x = enemy.startX;
-        enemy.y = enemy.startY;
-
-        enemy.state = BanditState.PATROL;
-
-    }
-
-    break;
+            break;    
         }
     }
-
 }
 
 function playerHitsEnemy(enemy){

@@ -380,7 +380,7 @@ collision size of the player and the tree. Now the player cannot between a
 pair of trees, neither horizontally nor vertically.
 
 
-Version 01.35	20 minutes dev	0 minutes CPU	5 minutes test
+Version 01.35	20 minutes dev	0 minutes CPU	5 minutes test		19 hours 20
 
 I noticed a quirk after that most recent change. Consider two trees next
 to each other, diagonally. Because of the previous change, you cannot get
@@ -390,11 +390,25 @@ I went through all 4 levels. I changed the maps to get rid of a diagonals
 like that. There are either more connections, or one of the trees is removed.
 
 
+Version 01.36	23 minutes dev	0 minutes CPU	2 minutes test		19 hours 45
+
+From several weeks ago, ChatGPT noticed an optimization:
+"BanditState.CHASE and BanditState.RETURN are nearly identical. Refactor."
+I asked Chat to follow through. It did well: it was 40 lines of code, with
+code broken out in a separate file, improving readability. It worked on
+the first try.
+Another tree-related defect. The player can no longer run throw dense
+trees. That is by design. However, the bandit still code. Resolving was
+easy. To implement the change for the player, it's collision rectangle
+was increased slightly. To fix this with bandits, I also increased
+their collision rectangle. I confirmed the bandit cannot run between
+trees.
+
+
 
 TODO It looks like Bandits can go threw trees. What are its dimensions?
 TODO Add MIT License
 TODO browse tab icon
-TODO BanditState.CHASE and BanditState.RETURN are nearly identical. Refactor.
 TODO The wolf UI needs changes. Shape a little blah. Maybe larger head?
 TODO The bandit UI needs changes. Better arm/shoulders, bigger head,
 	animation?
