@@ -405,10 +405,18 @@ their collision rectangle. I confirmed the bandit cannot run between
 trees.
 
 
+Version 01.37	20 minutes dev	3 minutes CPU	2 minute test		20 hours 10
 
-TODO It looks like Bandits can go threw trees. What are its dimensions?
-TODO Add MIT License
-TODO browse tab icon
+Getting ready for an initial release. A standard matter is the MIT License.
+Normally, a link is added toward the bottom-right of the screen. This
+game has MIT LICENSE within the game's NES-like title screen. I wanted to
+add a link of that is clicked on. This was quick and easy.
+Another standard thing: create a favicon. I had an idea that was plain: the
+KM initials. I asked ChtGPT if it had suggestions. It had one I liked: a
+castle. That got added.
+
+
+
 TODO The wolf UI needs changes. Shape a little blah. Maybe larger head?
 TODO The bandit UI needs changes. Better arm/shoulders, bigger head,
 	animation?
@@ -417,6 +425,8 @@ TODO keep the game loop synchronous and let reaching the castle set a flag like
 	pendingLevelAdvance. Then, outside the movement logic, call an async loader
 	once. (That's a quote from Chat)
 TODO Victory music when they have won
+TODO after publishing to web, as an experiment have other AIs examine, see
+	if they have recommendations.
 Maybe Better handling for character in front of or behind objects. Right now, it
 	looks like the character is in front of everything.
 

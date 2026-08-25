@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>King Messenger</title>
+<link rel="icon" type="image/png" href="castle_favicon.png">
 
 <style>
 body{
@@ -35,6 +36,7 @@ canvas{
 
 const SCREEN_WIDTH=256;
 const SCREEN_HEIGHT=240;
+const MIT_LICENSE_URL = "..\..\LICENSE.txt";
 
 const TILE_SIZE=16;
 
@@ -389,6 +391,29 @@ document.addEventListener("keydown",(e)=>{
             lastTimerTick += performance.now() - pauseStartTime;
 
         }
+
+    }
+
+});
+
+canvas.addEventListener("click", (e) => {
+
+    if(gameState !== State.TITLE)
+        return;
+
+    const rect = canvas.getBoundingClientRect();
+
+    const x = (e.clientX - rect.left) *
+              (canvas.width / rect.width);
+
+    const y = (e.clientY - rect.top) *
+              (canvas.height / rect.height);
+
+    // MIT LICENSE occupies this area on the title screen
+    if(x >= 80 && x <= 176 &&
+       y >= 198 && y <= 220){
+
+        window.open(MIT_LICENSE_URL, "_blank");
 
     }
 
