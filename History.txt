@@ -412,7 +412,7 @@ Normally, a link is added toward the bottom-right of the screen. This
 game has MIT LICENSE within the game's NES-like title screen. I wanted to
 add a link of that is clicked on. This was quick and easy.
 Another standard thing: create a favicon. I had an idea that was plain: the
-KM initials. I asked ChtGPT if it had suggestions. It had one I liked: a
+KM initials. I asked ChatGPT if it had suggestions. It had one I liked: a
 castle. That got added.
 
 
@@ -424,10 +424,22 @@ TODO Graphical Pause button on the screen
 TODO keep the game loop synchronous and let reaching the castle set a flag like
 	pendingLevelAdvance. Then, outside the movement logic, call an async loader
 	once. (That's a quote from Chat)
-TODO Victory music when they have won
-TODO after publishing to web, as an experiment have other AIs examine, see
-	if they have recommendations.
+TODO Victory music when they have won the game
 Maybe Better handling for character in front of or behind objects. Right now, it
 	looks like the character is in front of everything.
+
+
+I had an agenda item to have Claude and Gemini review my app. The Gemini
+content was worthless. This is what Claude recommend that I'll track:
+TODO Fix the MIT_LICENSE link. The approach in the code does not work. Need
+	to get the double up folders to work, like all the other games
+Maybe Bandit patrol is always horizontal — patrolAxis is dead code. That
+	is true... but instead maybe I want to use vertical. That will
+	require implementation.
+TODO No in-game instructions. Do a modal like other games.
+TODO Code organization: it's a single ~1750-line <script> block with no 
+	modules and a fair amount of inconsistent indentation
+TODO Fixed tabbing across the game file
+
 
 
