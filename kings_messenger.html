@@ -89,7 +89,8 @@ const LEVEL_FILES = [
 const MUSIC_FILES = [
     "Song1.json",
     "Song2.json",
-    "Song3.json"
+    "Song3.json",
+    "Victory1.json"
 ];
 
 const MUSIC_FOR_LEVEL = [
@@ -98,6 +99,8 @@ const MUSIC_FOR_LEVEL = [
     0,
     2
 ];
+
+const VICTORY_MUSIC_INDEX = 3;
 
 const PLAYER_RIGHT_STAND = [
 
@@ -372,6 +375,7 @@ document.addEventListener("keydown",(e)=>{
     }
 
     if(gameState===State.WIN && e.key==="Enter"){
+        stopMusic();
         gameState = State.TITLE;
     }
 
@@ -1413,7 +1417,7 @@ else{
         else{
 
             gameState = State.WIN;
-
+            startMusic(music[VICTORY_MUSIC_INDEX]);
         }
 
     }

@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>King's Messenger - Victory Music Demo</title>
+<style>
+    body { background:#111; color:#eee; font-family:Arial,sans-serif; margin:32px; }
+    h1 { font-size:24px; }
+    button { font-size:17px; padding:10px 16px; margin:5px; cursor:pointer; }
+    #status { margin:20px 5px; font-size:19px; }
+    p { max-width:760px; line-height:1.45; }
+</style>
+</head>
+<body>
+<h1>King's Messenger — Victory Music Demo</h1>
+<p>
+Three original NES-style victory songs. Each button plays one song and loops it.
+Press Stop to stop playback.
+</p>
+<div id="buttons"></div>
+<button onclick="stopSong()">Stop</button>
+<div id="status">Stopped</div>
+
+<script>
+const SONGS = [
+  {
+    "name": "ROYAL TRIUMPH",
+    "description": "Bright, energetic, and victorious. A clear celebration after the final level.",
+    "bpm": 172,
+    "melody": [
+      "E5",
+      "G5",
+      "A5",
+      "B5",
+      "C6",
+      "B5",
+      "A5",
+      "G5",
+      "E5",
+      "G5",
+      "A5",
+      "C6",
+      "D6",
+      "C6",
+      "B5",
+      "A5",
+      "G5",
+      "A5",
+      "B5",
+      "D6",
+      "E6",
+      "D6",
+      "B5",
+      "A5",
+      "G5",
+      "E5",
+      "G5",
+      "A5",
+      "B5",
+      "G5",
+      "E5",
+      "D5",
+      "E5",
+      "G5",
+      "A5",
+      "B5",
+      "D6",
+      "E6",
+      "D6",
+      "B5",
+      "C6",
+      "B5",
+      "A5",
+      "G5",
+      "A5",
+      "B5",
+      "D6",
+      "E6",
+      "G6",
+      "E6",
+      "D6",
+      "B5",
+      "A5",
+      "B5",
+      "D6",
+      "B5",
+      "G5",
+      "A5",
+      "B5",
+      "G5",
+      "E5",
+      "G5",
+      "E5",
+      "C5"
+    ],
+    "harmony": [
+      "C5",
+      "E5",
+      "G5",
+      "G5",
+      "C5",
+      "E5",
+      "G5",
+      "D5",
+      "C5",
+      "E5",
+      "A5",
+      "A5",
+      "D5",
+      "F5",
+      "A5",
+      "E5",
+      "B4",
+      "D5",
+      "G5",
+      "G5",
+      "C5",
+      "E5",
+      "G5",
+      "D5",
+      "C5",
+      "E5",
+      "G5",
+      "G5",
+      "B4",
+      "D5",
+      "G5",
+      "D5",
+      "C5",
+      "E5",
+      "A5",
+      "A5",
+      "D5",
+      "F5",
+      "A5",
+      "E5",
+      "E5",
+      "G5",
+      "C6",
+      "C6",
+      "F5",
+      "A5",
+      "C6",
+      "G5",
+      "E5",
+      "G5",
+      "B5",
+      "B5",
+      "D5",
+      "G5",
+      "B5",
+      "D5",
+      "C5",
+      "E5",
+      "G5",
+      "G5",
+      "C5",
+      "E5",
+      "G5",
+      "C5"
+    ],
+    "bass": [
+      "C2",
+      "C2",
+      "G2",
+      "G2",
+      "A2",
+      "A2",
+      "E2",
+      "E2",
+      "F2",
+      "F2",
+      "C2",
+      "C2",
+      "G2",
+      "G2",
+      "D2",
+      "D2",
+      "G2",
+      "G2",
+      "D2",
+      "D2",
+      "E2",
+      "E2",
+      "B1",
+      "B1",
+      "C2",
+      "C2",
+      "G2",
+      "G2",
+      "E2",
+      "E2",
+      "G2",
+      "G2",
+      "A2",
+      "A2",
+      "E2",
+      "E2",
+      "F2",
+      "F2",
+      "C2",
+      "C2",
+      "D2",
+      "D2",
+      "A1",
+      "A1",
+      "F2",
+      "F2",
+      "G2",
+      "G2",
+      "C2",
+      "C2",
+      "G2",
+      "G2",
+      "D2",
+      "D2",
+      "G2",
+      "G2",
+      "C2",
+      "C2",
+      "G2",
+      "G2",
+      "C2",
+      "C2",
+      "G2",
+      "G2"
+    ],
+    "drums": [
+      "kick",
+      "snare",
+      "kick",
+      null,
+      "kick",
+      "snare",
+      "kick",
+      null,
+      "kick",
+      "snare",
+      "kick",
+      null,
+      "kick",
+      "snare",
+      "kick",
+      null,
+      "kick",
+      "snare",
+      "kick",
+      null,
+      "kick",
+      "snare",
+      "kick",
+      null,
+      "kick",
+      "snare",
+      "kick",
+      null,
+      "kick",
+      "snare",
+      "kick",
+      null,
+      "kick",
+      "snare",
+      "kick",
+      null,
+      "kick",
+      "snare",
+      "kick",
+      null,
+      "kick",
+      "snare",
+      "kick",
+      null,
+      "kick",
+      "snare",
+      "kick",
+      null,
+      "kick",
+      "snare",
+      "kick",
+      null,
+      "kick",
+      "snare",
+      "kick",
+      null,
+      "kick",
+      "snare",
+      "kick",
+      null,
+      "kick",
+      "snare",
+      "kick",
+      null
+    ]
+  },
+  {
+    "name": "CASTLE CROWN",
+    "description": "Royal and triumphant, with a stronger fanfare character and a bright high-register finish.",
+    "bpm": 176,
+    "melody": [
+      "G5",
+      "G5",
+      "B5",
+      "D6",
+      "G6",
+      "D6",
+      "B5",
+      "A5",
+      "G5",
+      "A5",
+      "B5",
+      "D6",
+      "E6",
+      "D6",
+      "B5",
+      "G5",
+      "E5",
+      "G5",
+      "C6",
+      "E6",
+      "G6",
+      "E6",
+      "D6",
+      "C6",
+      "B5",
+      "D6",
+      "G6",
+      "F#6",
+      "E6",
+      "D6",
+      "B5",
+      "A5",
+      "G5",
+      "B5",
+      "D6",
+      "G6",
+      "A6",
+      "G6",
+      "D6",
+      "B5",
+      "C6",
+      "E6",
+      "G6",
+      "C7",
+      "B6",
+      "G6",
+      "E6",
+      "D6",
+      "B5",
+      "D6",
+      "G6",
+      "A6",
+      "G6",
+      "E6",
+      "D6",
+      "B5",
+      "G5",
+      "A5",
+      "B5",
+      "D6",
+      "G6",
+      "D6",
+      "B5",
+      "G5"
+    ],
+    "harmony": [
+      "G4",
+      "B4",
+      "D5",
+      "D5",
+      "G4",
+      "B4",
+      "D5",
+      "D5",
+      "C5",
+      "E5",
+      "G5",
+      "G5",
+      "C5",
+      "E5",
+      "G5",
+      "G5",
+      "C5",
+      "E5",
+      "G5",
+      "G5",
+      "A4",
+      "C5",
+      "E5",
+      "E5",
+      "D5",
+      "F#5",
+      "A5",
+      "A5",
+      "D5",
+      "F#5",
+      "A5",
+      "D5",
+      "G4",
+      "B4",
+      "D5",
+      "D5",
+      "G4",
+      "B4",
+      "D5",
+      "D5",
+      "C5",
+      "E5",
+      "G5",
+      "G5",
+      "F#5",
+      "A5",
+      "C6",
+      "C6",
+      "G4",
+      "B4",
+      "D5",
+      "D5",
+      "A4",
+      "C5",
+      "E5",
+      "E5",
+      "G4",
+      "B4",
+      "D5",
+      "D5",
+      "G4",
+      "B4",
+      "D5",
+      "G5"
+    ],
+    "bass": [
+      "G2",
+      "G2",
+      "D3",
+      "D3",
+      "G2",
+      "G2",
+      "D3",
+      "D3",
+      "C3",
+      "C3",
+      "G2",
+      "G2",
+      "C3",
+      "C3",
+      "G2",
+      "G2",
+      "C3",
+      "C3",
+      "G2",
+      "G2",
+      "A2",
+      "A2",
+      "E3",
+      "E3",
+      "D3",
+      "D3",
+      "A2",
+      "A2",
+      "D3",
+      "D3",
+      "A2",
+      "A2",
+      "G2",
+      "G2",
+      "D3",
+      "D3",
+      "G2",
+      "G2",
+      "D3",
+      "D3",
+      "C3",
+      "C3",
+      "G2",
+      "G2",
+      "D3",
+      "D3",
+      "G2",
+      "G2",
+      "E2",
+      "E2",
+      "B2",
+      "B2",
+      "C3",
+      "C3",
+      "D3",
+      "D3",
+      "G2",
+      "G2",
+      "D3",
+      "D3",
+      "G2",
+      "G2",
+      "G2",
+      "G2"
+    ],
+    "drums": [
+      "kick",
+      null,
+      "snare",
+      null,
+      "kick",
+      null,
+      "snare",
+      null,
+      "kick",
+      null,
+      "snare",
+      null,
+      "kick",
+      null,
+      "snare",
+      null,
+      "kick",
+      null,
+      "snare",
+      null,
+      "kick",
+      null,
+      "snare",
+      null,
+      "kick",
+      null,
+      "snare",
+      null,
+      "kick",
+      null,
+      "snare",
+      null,
+      "kick",
+      null,
+      "snare",
+      null,
+      "kick",
+      null,
+      "snare",
+      null,
+      "kick",
+      null,
+      "snare",
+      null,
+      "kick",
+      null,
+      "snare",
+      null,
+      "kick",
+      null,
+      "snare",
+      null,
+      "kick",
+      null,
+      "snare",
+      null,
+      "kick",
+      null,
+      "snare",
+      null,
+      "kick",
+      null,
+      "snare",
+      null
+    ]
+  },
+  {
+    "name": "HERO'S RETURN",
+    "description": "Driving and celebratory, with a memorable heroic hook and a strong final cadence.",
+    "bpm": 170,
+    "melody": [
+      "C6",
+      "G5",
+      "A5",
+      "G5",
+      "E5",
+      "G5",
+      "C6",
+      "D6",
+      "E6",
+      "D6",
+      "C6",
+      "G5",
+      "A5",
+      "B5",
+      "C6",
+      "E6",
+      "G6",
+      "E6",
+      "D6",
+      "C6",
+      "B5",
+      "A5",
+      "G5",
+      "E5",
+      "G5",
+      "A5",
+      "B5",
+      "D6",
+      "C6",
+      "B5",
+      "A5",
+      "G5",
+      "C6",
+      "G5",
+      "A5",
+      "C6",
+      "E6",
+      "G6",
+      "E6",
+      "D6",
+      "C6",
+      "B5",
+      "A5",
+      "G5",
+      "E5",
+      "G5",
+      "A5",
+      "B5",
+      "D6",
+      "E6",
+      "G6",
+      "E6",
+      "D6",
+      "B5",
+      "A5",
+      "G5",
+      "E5",
+      "G5",
+      "A5",
+      "B5",
+      "C6",
+      "G5",
+      "E5",
+      "C5"
+    ],
+    "harmony": [
+      "E5",
+      "G5",
+      "C6",
+      "C6",
+      "E5",
+      "G5",
+      "C6",
+      "G5",
+      "C5",
+      "E5",
+      "G5",
+      "G5",
+      "F5",
+      "A5",
+      "C6",
+      "C6",
+      "E5",
+      "G5",
+      "B5",
+      "B5",
+      "D5",
+      "F5",
+      "A5",
+      "A5",
+      "G4",
+      "B4",
+      "D5",
+      "D5",
+      "E5",
+      "G5",
+      "C6",
+      "C6",
+      "E5",
+      "G5",
+      "C6",
+      "C6",
+      "E5",
+      "G5",
+      "C6",
+      "G5",
+      "F5",
+      "A5",
+      "C6",
+      "C6",
+      "E5",
+      "G5",
+      "B5",
+      "B5",
+      "G4",
+      "B4",
+      "D5",
+      "D5",
+      "F5",
+      "A5",
+      "C6",
+      "C6",
+      "E5",
+      "G5",
+      "C6",
+      "C6",
+      "E5",
+      "G5",
+      "C6",
+      "C5"
+    ],
+    "bass": [
+      "C2",
+      "G2",
+      "A2",
+      "G2",
+      "C2",
+      "G2",
+      "C3",
+      "G2",
+      "A2",
+      "E2",
+      "A2",
+      "E2",
+      "F2",
+      "C2",
+      "G2",
+      "C2",
+      "C2",
+      "G2",
+      "B1",
+      "G2",
+      "D2",
+      "A2",
+      "E2",
+      "A2",
+      "G2",
+      "D2",
+      "G2",
+      "D2",
+      "C2",
+      "G2",
+      "C2",
+      "G2",
+      "C2",
+      "G2",
+      "A2",
+      "G2",
+      "C2",
+      "G2",
+      "C3",
+      "G2",
+      "F2",
+      "C2",
+      "F2",
+      "C2",
+      "G2",
+      "D2",
+      "G2",
+      "D2",
+      "G2",
+      "D2",
+      "G2",
+      "D2",
+      "A2",
+      "E2",
+      "A2",
+      "E2",
+      "C2",
+      "G2",
+      "A2",
+      "G2",
+      "C2",
+      "G2",
+      "C2",
+      "C2"
+    ],
+    "drums": [
+      "kick",
+      null,
+      "kick",
+      "snare",
+      null,
+      "kick",
+      "snare",
+      null,
+      "kick",
+      null,
+      "kick",
+      "snare",
+      null,
+      "kick",
+      "snare",
+      null,
+      "kick",
+      null,
+      "kick",
+      "snare",
+      null,
+      "kick",
+      "snare",
+      null,
+      "kick",
+      null,
+      "kick",
+      "snare",
+      null,
+      "kick",
+      "snare",
+      null,
+      "kick",
+      null,
+      "kick",
+      "snare",
+      null,
+      "kick",
+      "snare",
+      null,
+      "kick",
+      null,
+      "kick",
+      "snare",
+      null,
+      "kick",
+      "snare",
+      null,
+      "kick",
+      null,
+      "kick",
+      "snare",
+      null,
+      "kick",
+      "snare",
+      null,
+      "kick",
+      null,
+      "kick",
+      "snare",
+      null,
+      "kick",
+      "snare",
+      null
+    ]
+  }
+];
+
+let audioCtx = null;
+let playing = false;
+let currentSong = null;
+let loopTimer = null;
+
+function ensureAudio() {
+    if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    if (audioCtx.state === "suspended") {
+        audioCtx.resume();
+    }
+}
+
+const NOTE_OFFSETS = {
+    "C":-9, "C#":-8, "D":-7, "D#":-6, "E":-5, "F":-4,
+    "F#":-3, "G":-2, "G#":-1, "A":0, "A#":1, "B":2
+};
+
+function frequency(note) {
+    if (!note) return 0;
+    const match = note.match(/^([A-G]#?)([0-9])$/);
+    if (!match) return 0;
+    const semitone = NOTE_OFFSETS[match[1]];
+    const octave = Number(match[2]);
+    return 440 * Math.pow(2, (semitone + (octave - 4) * 12) / 12);
+}
+
+function playTone(note, start, duration, type, volume, output) {
+    if (!note) return;
+
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+
+    osc.type = type;
+    osc.frequency.value = frequency(note);
+
+    gain.gain.setValueAtTime(0.0001, start);
+    gain.gain.exponentialRampToValueAtTime(volume, start + 0.008);
+    gain.gain.exponentialRampToValueAtTime(0.0001, start + duration);
+
+    osc.connect(gain).connect(output);
+    osc.start(start);
+    osc.stop(start + duration + 0.02);
+}
+
+function playDrum(kind, start) {
+    if (!kind) return;
+
+    if (kind === "kick") {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = "square";
+        osc.frequency.setValueAtTime(130, start);
+        osc.frequency.exponentialRampToValueAtTime(55, start + 0.09);
+        gain.gain.setValueAtTime(0.22, start);
+        gain.gain.exponentialRampToValueAtTime(0.0001, start + 0.12);
+        osc.connect(gain).connect(audioCtx.destination);
+        osc.start(start);
+        osc.stop(start + 0.13);
+    }
+
+    if (kind === "snare") {
+        const buffer = audioCtx.createBuffer(
+            1, Math.floor(audioCtx.sampleRate * 0.09), audioCtx.sampleRate
+        );
+        const data = buffer.getChannelData(0);
+
+        for (let i = 0; i < data.length; i++) {
+            data[i] = Math.random() * 2 - 1;
+        }
+
+        const noise = audioCtx.createBufferSource();
+        const gain = audioCtx.createGain();
+
+        noise.buffer = buffer;
+        gain.gain.setValueAtTime(0.12, start);
+        gain.gain.exponentialRampToValueAtTime(0.0001, start + 0.09);
+
+        noise.connect(gain).connect(audioCtx.destination);
+        noise.start(start);
+        noise.stop(start + 0.10);
+    }
+}
+
+function scheduleSong(song) {
+    const secondsPerStep = 60 / song.bpm;
+    const start = audioCtx.currentTime + 0.08;
+    const loopDuration = 64 * secondsPerStep;
+
+    const master = audioCtx.createGain();
+    master.gain.value = 0.8;
+    master.connect(audioCtx.destination);
+
+    for (let i = 0; i < 64; i++) {
+        const t = start + i * secondsPerStep;
+
+        playTone(song.melody[i], t, secondsPerStep * 0.82,
+                 "square", 0.10, master);
+
+        playTone(song.harmony[i], t, secondsPerStep * 0.82,
+                 "triangle", 0.055, master);
+
+        playTone(song.bass[i], t, secondsPerStep * 0.88,
+                 "square", 0.075, master);
+
+        playDrum(song.drums[i], t);
+    }
+
+    loopTimer = setTimeout(function() {
+        if (playing && currentSong === song) {
+            scheduleSong(song);
+        }
+    }, loopDuration * 1000 - 40);
+}
+
+function playSong(index) {
+    stopSong();
+    ensureAudio();
+
+    currentSong = SONGS[index];
+    playing = true;
+    document.getElementById("status").textContent =
+        "Playing: " + currentSong.name;
+
+    scheduleSong(currentSong);
+}
+
+function stopSong() {
+    playing = false;
+    currentSong = null;
+
+    if (loopTimer !== null) {
+        clearTimeout(loopTimer);
+        loopTimer = null;
+    }
+
+    document.getElementById("status").textContent = "Stopped";
+}
+
+SONGS.forEach(function(song, index) {
+    const button = document.createElement("button");
+    button.textContent = "Play " + (index + 1) + ": " + song.name;
+    button.onclick = function() { playSong(index); };
+    document.getElementById("buttons").appendChild(button);
+});
+</script>
+</body>
+</html>

@@ -31,6 +31,9 @@ function stopMusic(){
 
 function noteFrequency(note){
 
+    if(!note)
+        return 0;
+
     const notes = {
         "C":0,
         "C#":1,

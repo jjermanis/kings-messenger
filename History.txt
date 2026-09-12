@@ -416,6 +416,19 @@ KM initials. I asked ChatGPT if it had suggestions. It had one I liked: a
 castle. That got added.
 
 
+Version 1 was published with 01.37 on 8/3/26
+
+
+Version 02.01	30 minutes dev	1 minute CPU	4 minutes test		20 hours 45
+
+Now that the app in complete as a playable game, the next step is to add
+enhancements.
+The game has music for each level. I wanted to add music for winning the
+game. I asked ChatGPT to come up with a victory song. It provided three
+solutions - I chose one. There were some defects that were part of what
+was generated, but it works well after a couple defects resolved.
+
+
 
 TODO The wolf UI needs changes. Shape a little blah. Maybe larger head?
 TODO The bandit UI needs changes. Better arm/shoulders, bigger head,
@@ -424,7 +437,6 @@ TODO Graphical Pause button on the screen
 TODO keep the game loop synchronous and let reaching the castle set a flag like
 	pendingLevelAdvance. Then, outside the movement logic, call an async loader
 	once. (That's a quote from Chat)
-TODO Victory music when they have won the game
 Maybe Better handling for character in front of or behind objects. Right now, it
 	looks like the character is in front of everything.
 
@@ -433,6 +445,10 @@ I had an agenda item to have Claude and Gemini review my app. The Gemini
 content was worthless. This is what Claude recommend that I'll track:
 TODO Fix the MIT_LICENSE link. The approach in the code does not work. Need
 	to get the double up folders to work, like all the other games
+TODO Someone played Level 4. A bandit got stuck in a tree. Clearly stuck:
+	he was direct to the bandit, and the bandit did not chase. Theory:
+	the bandit was far enough and was trying to get back to start spot.
+	He couldn't get there.
 Maybe Bandit patrol is always horizontal — patrolAxis is dead code. That
 	is true... but instead maybe I want to use vertical. That will
 	require implementation.
