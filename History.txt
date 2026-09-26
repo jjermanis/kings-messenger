@@ -429,8 +429,29 @@ solutions - I chose one. There were some defects that were part of what
 was generated, but it works well after a couple defects resolved.
 
 
+Version 02.02	27 minutes dev	5 minute CPU	3 minutes test		21 hours 20
 
-TODO The wolf UI needs changes. Shape a little blah. Maybe larger head?
+A long lasting TODO was to improve the UI for the wolf. It was name a 
+wolf, but really didn't look like a wolf. I ask ChatGPT to come up with
+3 alternate UI. It came with them - they were similar, but one liked 
+best. I asked for 16x8. The resolution was at least 32x16, probably more.
+I asked for ChatGPT to create that wolf at 16x8. It didn't do it - no
+apparent change to the resolution. To try to enforce 16x8, I asked it to
+create the wolf image using the app's data format. It did that - in that
+format, the layout looked nothing what it designed. I asked to go back
+to image, at 16x8. Again, it went over that resolution. ChatGPT ran out
+of imaging for my account at that point.
+It tried it again. It was borderline funny. It took that same image, and
+placed it on a grid. The grid for pixels there - they were not followed.
+To further add to the humor, the numbered columns had a #5 column twice,
+so I guess it was 17x8. It didn't use the last column, so it made no sense.
+I gave up on ChatGPT. With the nice wolf image over the grid, I could
+create the 16x8 wolf image fairly quickly. It does look much better than
+before. I need to come back and animate it.
+
+
+
+TODO Add the 2nd wold animation frame.
 TODO The bandit UI needs changes. Better arm/shoulders, bigger head,
 	animation?
 TODO Graphical Pause button on the screen
@@ -455,7 +476,6 @@ Maybe Bandit patrol is always horizontal — patrolAxis is dead code. That
 TODO No in-game instructions. Do a modal like other games.
 TODO Code organization: it's a single ~1750-line <script> block with no 
 	modules and a fair amount of inconsistent indentation
-TODO Fixed tabbing across the game file
 
 
 
