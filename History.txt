@@ -429,7 +429,7 @@ solutions - I chose one. There were some defects that were part of what
 was generated, but it works well after a couple defects resolved.
 
 
-Version 02.02	27 minutes dev	5 minute CPU	3 minutes test		21 hours 20
+Version 02.02	27 minutes dev	5 minutes CPU	3 minutes test		21 hours 20
 
 A long lasting TODO was to improve the UI for the wolf. It was name a 
 wolf, but really didn't look like a wolf. I ask ChatGPT to come up with
@@ -450,8 +450,14 @@ create the 16x8 wolf image fairly quickly. It does look much better than
 before. I need to come back and animate it.
 
 
+Version	02.03	8 minutes dev	0 minutes CPU	2 minutes test		21 hours 30
 
-TODO Add the 2nd wold animation frame.
+This was the other frame of the animation. I did this one manually, similar
+to the basis in the previous commit. This ended up being quick and easy: I
+am much more pleased with this implementation.
+
+
+
 TODO The bandit UI needs changes. Better arm/shoulders, bigger head,
 	animation?
 TODO Graphical Pause button on the screen
