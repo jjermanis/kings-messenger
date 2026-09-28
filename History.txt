@@ -457,7 +457,19 @@ to the basis in the previous commit. This ended up being quick and easy: I
 am much more pleased with this implementation.
 
 
+Version 02.04	21 minutes dev	1 minute CPU	3 minutes test		21 hours 55
 
+There is functionality I wanted to add: Mute functionality. I wanted it to work
+either with a keyboard, or with an icon to click. I showed it the Mute button 
+for Minotaur. ChatGPT provided the code to show the Mute icon. Mute could be
+toggled using either the icon click of the M key. At first, it did not work
+at all. It was not a problem with the code. The change required the music.js
+file to be updated. The browser was caching that. I change the URL to enforce
+that. It worked well after that. There is a small UI problem: the Mute icon is
+framed when the M button is used. I'll work on that next.
+
+
+TODO When you use the M button to mute, the Mute icon is visually framed. Stop it.
 TODO The bandit UI needs changes. Better arm/shoulders, bigger head,
 	animation?
 TODO Graphical Pause button on the screen
