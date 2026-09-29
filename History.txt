@@ -469,13 +469,25 @@ that. It worked well after that. There is a small UI problem: the Mute icon is
 framed when the M button is used. I'll work on that next.
 
 
-TODO When you use the M button to mute, the Mute icon is visually framed. Stop it.
+Version 02.05	4 minutes dev	0 minute CPU	1 minute test		22 hours
+
+This addresses the minor issue in the previous version. The Mute icon appears
+with a frame when you press the M key, then click it with the mouse. In that
+order. This was easy to describe and to fix.  The Mute button's focus outline
+is set to none.
+
+
+
 TODO The bandit UI needs changes. Better arm/shoulders, bigger head,
 	animation?
 TODO Graphical Pause button on the screen
 TODO keep the game loop synchronous and let reaching the castle set a flag like
 	pendingLevelAdvance. Then, outside the movement logic, call an async loader
 	once. (That's a quote from Chat)
+TODO This is seen after game. Missing cleanup?
+	kings_messenger.html:1 Uncaught (in promise) Error: A listener indicated 
+	an asynchronous response by returning true, but the message channel closed 
+	before a response was received
 Maybe Better handling for character in front of or behind objects. Right now, it
 	looks like the character is in front of everything.
 
