@@ -477,10 +477,19 @@ order. This was easy to describe and to fix.  The Mute button's focus outline
 is set to none.
 
 
+Version 02.06	21 minutes dev	1 minute CPU	3 minutes test		22 hours 25
+
+The game already has a Pause function: they can tap the P key. I wanted to
+add a screen icon as well. I asked for a Pause button in the bottom-right
+corner. No functional changes were need: the Pause button would behave 
+identically to the P key. This ended up being fairly easy. ChatGPT has the
+good idea to break out the existing pause functionality into separate 
+functions, to make the design more clean.
+
+
 
 TODO The bandit UI needs changes. Better arm/shoulders, bigger head,
 	animation?
-TODO Graphical Pause button on the screen
 TODO keep the game loop synchronous and let reaching the castle set a flag like
 	pendingLevelAdvance. Then, outside the movement logic, call an async loader
 	once. (That's a quote from Chat)

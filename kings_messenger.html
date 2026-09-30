@@ -30,9 +30,15 @@ canvas{
     align-items:flex-start;
 }
 
-#muteButton{
+#gameControls{
+    width:100%;
+    display:flex;
+    justify-content:space-between;
     margin-top:6px;
-    margin-left:4px;
+}
+
+#muteButton,
+#pauseButton{
     padding:0;
     border:none;
     background:none;
@@ -42,7 +48,8 @@ canvas{
     cursor:pointer;
 }
 
-#muteButton:focus{
+#muteButton:focus,
+#pauseButton:focus{
     outline:none;
 }
 
@@ -55,11 +62,21 @@ canvas{
 
     <canvas id="game" width="256" height="240"></canvas>
 
-    <button id="muteButton"
-            type="button"
-            title="Mute">
-        🔊
-    </button>
+    <div id="gameControls">
+
+        <button id="muteButton"
+                type="button"
+                title="Mute">
+            🔊
+        </button>
+
+        <button id="pauseButton"
+                type="button"
+                title="Pause">
+            ⏸
+        </button>
+
+    </div>
 
 </div>
 
@@ -401,6 +418,9 @@ let muted = false;
 const muteButton =
     document.getElementById("muteButton");
 
+const pauseButton =
+    document.getElementById("pauseButton");
+
 const keys={};
 
 function toggleMute(){
@@ -414,6 +434,25 @@ function toggleMute(){
 
     muteButton.title =
         muted ? "Unmute" : "Mute";
+}
+
+function togglePause(){
+
+    if(gameState===State.PLAY){
+
+        pauseStartTime = performance.now();
+        gameState = State.PAUSE;
+
+    }
+    else if(gameState===State.PAUSE){
+
+        gameState = State.PLAY;
+
+        // Prevent the timer from "catching up"
+        lastTimerTick += performance.now() - pauseStartTime;
+
+    }
+
 }
 
 document.addEventListener("keydown",(e)=>{
@@ -433,22 +472,7 @@ document.addEventListener("keydown",(e)=>{
     }
 
     if(e.key==="p" || e.key==="P"){
-
-        if(gameState===State.PLAY){
-
-            pauseStartTime = performance.now();
-            gameState = State.PAUSE;
-
-        }
-        else if(gameState===State.PAUSE){
-
-            gameState = State.PLAY;
-
-            // Prevent the timer from "catching up"
-            lastTimerTick += performance.now() - pauseStartTime;
-
-        }
-
+        togglePause();
     }
 
 });
@@ -478,6 +502,10 @@ canvas.addEventListener("click", (e) => {
 
 muteButton.addEventListener("click", ()=>{
     toggleMute();
+});
+
+pauseButton.addEventListener("click", ()=>{
+    togglePause();
 });
 
 async function startNewGame(){
