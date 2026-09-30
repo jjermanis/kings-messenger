@@ -487,12 +487,24 @@ good idea to break out the existing pause functionality into separate
 functions, to make the design more clean.
 
 
+Version 02.07	7 minutes dev	1 minute CPU	2 minutes test		22 hours 35
+
+In the history here, I had comment from ChatGPT that I kept for quite a while:
+"Keep the game loop synchronous and let reaching the castle set a flag like
+pendingLevelAdvance. Then, outside the movement logic, call an async loader
+once."
+I'm not sure why that was there - Chat had a suggestion and I saved it. I
+asked Chat about it again. It was a small change, more or less in with what
+it said. Instead of potentially have multiple places to have the async call
+to advance levels, put it at one place at the end. It was simple and harmless.
+I made the suggested change. 
+I notice that an error I saw before ("A listener indicated an asynchronous 
+response") and I'm not seeing it now. Maybe this did really help.
+
+
 
 TODO The bandit UI needs changes. Better arm/shoulders, bigger head,
 	animation?
-TODO keep the game loop synchronous and let reaching the castle set a flag like
-	pendingLevelAdvance. Then, outside the movement logic, call an async loader
-	once. (That's a quote from Chat)
 TODO This is seen after game. Missing cleanup?
 	kings_messenger.html:1 Uncaught (in promise) Error: A listener indicated 
 	an asynchronous response by returning true, but the message channel closed 

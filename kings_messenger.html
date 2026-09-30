@@ -412,6 +412,7 @@ let pauseStartTime = 0;
 let gameOverStartTime = 0;
 let endOfLifeStartTime = 0;
 let endOfLifeMusicStartTime = 0;
+let pendingLevelAdvance = false;
 
 let muted = false;
 
@@ -1496,7 +1497,7 @@ else{
 
         if(currentLevel < LEVEL_FILES.length - 1){
 
-            await nextLevel();
+            pendingLevelAdvance = true;
 
         }
         else{
@@ -1504,6 +1505,14 @@ else{
             gameState = State.WIN;
             startMusic(music[VICTORY_MUSIC_INDEX]);
         }
+
+    }
+
+    if(pendingLevelAdvance){
+
+        pendingLevelAdvance = false;
+
+        await nextLevel();
 
     }
 
