@@ -17,7 +17,7 @@ There is a timer at the top of the screen. It counts down. When the timer goes t
 
 You start with three lives. If you lose all lives, the game is over. If you deliver to all four castles you win!
 
-Touch the P key to pause and resume the game.
+Touch the P key to pause and resume the game. Touch the M key to mute the audio for this game. If you prefer, there are clickable items for this directly below the game screen.
 
 
 ## Details
@@ -29,3 +29,12 @@ The game is intended to resemble a Nintendo Entertainment System game from the m
 * Initial version of the game.
 
 * Four levels are supported.
+
+## From Release #2 (Build 02.07 on 10/1/26)
+
+* Musical additions.
+
+* Improved graphics for wolves.
+
+* Added Mute button.
+
